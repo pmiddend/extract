@@ -1,8 +1,8 @@
 #include "determine_mime_type.hpp"
 #include "environment.hpp"
 #include "full_path.hpp"
-#include "plugins/base.hpp"
 #include "plugins/rar.hpp"
+#include "plugins/zip.hpp"
 #include <fcppt/io/cout.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/assign/make_container.hpp>
@@ -110,6 +110,11 @@ try
 	if (is_runnable(FCPPT_TEXT("rar")))
 		plugs.push_back(
 			new extract::plugins::rar(
+				env));
+
+	if (is_runnable(FCPPT_TEXT("zip")))
+		plugs.push_back(
+			new extract::plugins::zip(
 				env));
 	
 	bool found = 
