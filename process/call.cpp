@@ -1,4 +1,5 @@
 #include "call.hpp"
+#include "exec.hpp"
 #include <fcppt/exception.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/error/strerror.hpp>
@@ -55,6 +56,9 @@ extract::process::call(
 		close(
 			err_pipe[writing_end]);
 		
+		exec(
+			_args);
+#if 0
 		char **newargv = 
 			new char*[
 				static_cast<std::size_t>(
@@ -87,6 +91,7 @@ extract::process::call(
 					FCPPT_TEXT("execvp failed: "))+
 				fcppt::error::strerror(
 					errno));
+#endif
 	}
 
 	close(

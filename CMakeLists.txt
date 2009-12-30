@@ -12,7 +12,7 @@ INCLUDE(FindPkgConfig)
 
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
-FIND_PACKAGE(Boost 1.36.0 COMPONENTS
+FIND_PACKAGE(Boost 1.41.0 COMPONENTS
 	filesystem
 	program_options
 	system)
@@ -48,7 +48,8 @@ ENDIF ()
 FILE(GLOB basefiles *.cpp)
 
 FILE(GLOB_RECURSE collectionsfiles
-	process/*.cpp)
+	process/*.cpp
+	plugins/*.cpp)
 
 ADD_EXECUTABLE(extract ${basefiles} ${collectionsfiles})
 TARGET_LINK_LIBRARIES(extract fcppt)

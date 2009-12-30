@@ -1,13 +1,40 @@
 #include "determine_mime_type.hpp"
 #include "environment.hpp"
+#include "full_path.hpp"
+#include "plugins/base.hpp"
+#include "plugins/rar.hpp"
 #include <fcppt/io/cout.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/assign/make_container.hpp>
+#include <fcppt/filesystem/is_executable.hpp>
+#include <fcppt/filesystem/exists.hpp>
+#include <fcppt/filesystem/is_regular.hpp>
 #include <fcppt/exception.hpp>
 #include <fcppt/io/cerr.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/program_options.hpp>
+#include <boost/foreach.hpp>
 #include <cstdlib>
 #include <iostream>
+
+namespace
+{
+bool
+is_runnable(
+	fcppt::string const &r)
+{
+	fcppt::optional<fcppt::filesystem::path> const p = 
+		extract::full_path(
+			r);
+	
+	if (!p)
+		return false;
+	
+	return
+		fcppt::filesystem::is_executable(
+			*p);
+}
+}
 
 int main(
 	int const _argc,
@@ -55,7 +82,60 @@ try
 		return EXIT_SUCCESS;
 	}
 
-	fcppt::io::cerr << "Finished parsing, got the following input file: " << vm["input-file"].as<fcppt::string>() << "\n";
+	fcppt::filesystem::path const p = 
+		vm["input-file"].as<fcppt::string>();
+	
+	if (!fcppt::filesystem::exists(p))
+	{
+		fcppt::io::cerr << FCPPT_TEXT("The specified file \"") << p << FCPPT_TEXT("\" doesn't exist!\n");
+		return EXIT_FAILURE;
+	}
+
+	if (!fcppt::filesystem::is_regular(p))
+	{
+		fcppt::io::cerr << FCPPT_TEXT("The specified file \"") << p << FCPPT_TEXT("\" is not a regular file!\n");
+		return EXIT_FAILURE;
+	}
+	
+	extract::mime_type const m = 
+		extract::determine_mime_type(
+			p);
+	
+	typedef
+	boost::ptr_vector<extract::plugins::base>
+	plugin_sequence;
+
+	plugin_sequence plugs;
+
+	if (is_runnable(FCPPT_TEXT("rar")))
+		plugs.push_back(
+			new extract::plugins::rar(
+				env));
+	
+	bool found = 
+		false;
+	BOOST_FOREACH(plugin_sequence::reference r,plugs)
+	{
+		if (r.mimes().find(m) != r.mimes().end())
+		{
+			r.process(
+				p);
+			found = 
+				true;
+			break;
+		}
+	}
+
+	if (!found)
+	{
+		fcppt::io::cerr 
+			<< FCPPT_TEXT("There was no matching extract plugin for file ") 
+			<< p 
+			<< FCPPT_TEXT(" which has mime type: ") 
+			<< m
+			<< FCPPT_TEXT("\n");
+		return EXIT_FAILURE;
+	}
 }
 catch (boost::program_options::multiple_occurrences const &e)
 {

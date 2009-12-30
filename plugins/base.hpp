@@ -1,6 +1,9 @@
 #ifndef EXTRACT_PLUGINS_BASE_HPP_HPP_INCLUDED
 #define EXTRACT_PLUGINS_BASE_HPP_HPP_INCLUDED
 
+#include "mime_set.hpp"
+#include "../environment.hpp"
+
 namespace extract
 {
 namespace plugins
@@ -11,12 +14,12 @@ public:
 	explicit
 	base(
 		mime_set const &,
-		plugins::environment const &);
+		extract::environment const &);
 	
 	mime_set const &
 	mimes() const;
 
-	plugins::environment const &
+	extract::environment const &
 	environment() const;
 
 	virtual void
@@ -27,7 +30,7 @@ public:
 	~base();
 private:
 	mime_set const mimes_;
-	plugins::environment const &environment_;
+	extract::environment const &environment_;
 };
 }
 }

@@ -13,6 +13,11 @@ extract::environment::environment(
 			boost::program_options::value<fcppt::string>(),
 			"Set a password for the archive")
 		(
+			"keep-broken,k",
+			boost::program_options::value<bool>()->zero_tokens()->default_value(
+				false),
+			"Keep partially extracted (broken) files")
+		(
 			"target-dir,t",
 			boost::program_options::value<fcppt::string>(),
 			"The directory where to extract the stuff");
@@ -27,6 +32,13 @@ extract::environment::password() const
 			vm_["password"].as<fcppt::string>()
 		: 
 			fcppt::optional<fcppt::string>();
+}
+
+bool
+extract::environment::keep_broken() const
+{
+	return 
+		vm_["keep-broken"].as<bool>();
 }
 
 fcppt::optional<fcppt::filesystem::path> const

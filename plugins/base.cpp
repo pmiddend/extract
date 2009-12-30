@@ -2,7 +2,7 @@
 
 extract::plugins::base::base(
 	mime_set const &_mimes,
-	plugins::environment const &_environment)
+	extract::environment const &_environment)
 :
 	mimes_(
 		_mimes),
@@ -17,7 +17,7 @@ extract::plugins::base::mimes() const
 	return mimes_;
 }
 
-extract::plugins::environment const &
+extract::environment const &
 extract::plugins::base::environment() const
 {
 	return environment_;
