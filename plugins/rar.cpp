@@ -49,12 +49,6 @@ extract::plugins::rar::process(
 		args.push_back(
 			environment().target_path()->string());
 	
-	/*
-	fcppt::io::cerr << "Executing the following command:\n";
-	for (process::argument_list::const_iterator i = args.begin(); i != args.end(); ++i)
-		fcppt::io::cerr << *i << "\n";
-		*/
-	
 	process::exec(
 		args);
 }

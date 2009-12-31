@@ -7,6 +7,9 @@
 #include <fcppt/exception.hpp>
 #include <fcppt/io/cerr.hpp>
 
+fcppt::string const extract::plugins::zip::command_name_(
+	FCPPT_TEXT("unzip"));
+
 extract::plugins::zip::zip(
 	extract::environment const &_env)
 :

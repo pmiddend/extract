@@ -1,4 +1,5 @@
 #include "file_sequence_to_file_tree.hpp"
+#include "split.hpp"
 #include <fcppt/text.hpp>
 #include <fcppt/io/cerr.hpp>
 #include <boost/foreach.hpp>
@@ -30,19 +31,14 @@ analyze_part(
 	extract::file_tree &_t,
 	extract::file_sequence::const_reference r)
 {
-	typedef
-	std::vector<fcppt::string>
-	part_vector;
-
-	part_vector parts;
-	boost::algorithm::split(
-		parts,
-		r,
-		boost::algorithm::is_any_of("/"));
-	
 	extract::file_tree *t = 
 		&_t;
-	BOOST_FOREACH(part_vector::const_reference p,parts)
+	BOOST_FOREACH(
+		fcppt::string const &p,
+		extract::split(
+			r,
+			boost::algorithm::is_any_of(
+				FCPPT_TEXT("/"))))
 	{
 		extract::file_tree::iterator i = 
 			find_child(
