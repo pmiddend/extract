@@ -1,6 +1,7 @@
 #include "determine_mime_type.hpp"
 #include "environment.hpp"
 #include "full_path.hpp"
+#include "list_files.hpp"
 #include "plugins/rar.hpp"
 #include "plugins/zip.hpp"
 #include <fcppt/io/cout.hpp>
@@ -53,6 +54,11 @@ try
 		(
 			"help",
 			"Produce help message")
+		(
+			"list,l",
+			boost::program_options::value<bool>()->zero_tokens()->default_value(
+				false),
+			"List contents instead of extracting the files")
 		(
 			"input-file",
 			boost::program_options::value<fcppt::string>(),
@@ -117,21 +123,13 @@ try
 			new extract::plugins::zip(
 				env));
 	
-	bool found = 
-		false;
-	BOOST_FOREACH(plugin_sequence::reference r,plugs)
-	{
-		if (r.mimes().find(m) != r.mimes().end())
-		{
-			r.process(
-				p);
-			found = 
-				true;
+	plugin_sequence::iterator i = 
+		plugs.end();
+	for (i = plugs.begin(); i != plugs.end(); ++i)
+		if (i->mimes().find(m) != i->mimes().end())
 			break;
-		}
-	}
-
-	if (!found)
+	
+	if (i == plugs.end())
 	{
 		fcppt::io::cerr 
 			<< FCPPT_TEXT("There was no matching extract plugin for file ") 
@@ -141,6 +139,16 @@ try
 			<< FCPPT_TEXT("\n");
 		return EXIT_FAILURE;
 	}
+
+	if (vm["list"].as<bool>())
+		extract::list_files(
+			*i,
+			p,
+			m);
+	else
+		i->process(
+			p,
+			m);
 }
 catch (boost::program_options::multiple_occurrences const &e)
 {

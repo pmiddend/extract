@@ -3,6 +3,7 @@
 
 #include "mime_set.hpp"
 #include "../environment.hpp"
+#include "../file_sequence.hpp"
 
 namespace extract
 {
@@ -24,7 +25,13 @@ public:
 
 	virtual void
 	process(
-		fcppt::filesystem::path const &) = 0;
+		fcppt::filesystem::path const &,
+		mime_type const &) = 0;
+
+	virtual file_sequence const 
+	list(
+		fcppt::filesystem::path const &,
+		mime_type const &) = 0;
 
 	virtual
 	~base();
