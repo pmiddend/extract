@@ -30,36 +30,54 @@ split(
 
 	return p;
 }
+
+bool
+is_suffix(
+	fcppt::string const &_suffix,
+	fcppt::string const &_str)
+{
+	return 
+		_str.compare(
+			static_cast<fcppt::string::size_type>(
+				_str.size() - 
+				_suffix.length()),
+			_suffix.size(),
+			_suffix) == 0;
+}
 }
 
 extract::mime_type const
 extract::determine_mime_type(
 	fcppt::filesystem::path const &_p)
 {
-	fcppt::string const output =
+	process::output const out =
 		process::call(
 			fcppt::assign::make_container<process::argument_list>
 				(fcppt::string(FCPPT_TEXT("file")))
 				(fcppt::string(FCPPT_TEXT("-ib")))
 				(_p.string()));
 	
+	if (!out.err.empty())
+		throw fcppt::exception(
+			FCPPT_TEXT("file returned an error: ")+out.err);
+	
 	fcppt::string::size_type newline_position = 
-		output.find(
+		out.out.find(
 			FCPPT_TEXT('\n'));
 	
 	if(
-		newline_position != static_cast<fcppt::string::size_type>(output.size()-1))
+		newline_position != static_cast<fcppt::string::size_type>(out.out.size()-1))
 		throw fcppt::exception(
 			FCPPT_TEXT("Expected a single line of output from \"file\" command, got the following: ")+
 			boost::algorithm::replace_all_copy(
-				output,
+				out.out,
 				fcppt::string(
 					FCPPT_TEXT("\n")),
 				fcppt::string(
 					FCPPT_TEXT("\\n"))));
 	
 	fcppt::string const first_line = 
-		output.substr(
+		out.out.substr(
 			0,
 			newline_position);
 
@@ -71,13 +89,32 @@ extract::determine_mime_type(
 	if (mime_pair.second.empty())
 		throw fcppt::exception(
 			FCPPT_TEXT("Expected output in the format \"<mime>; <charset>\" from file, got: ")+first_line);
+	
+	if (mime_pair.first == FCPPT_TEXT("application/octet-stream"))
+	{
+		fcppt::string const e = 
+			fcppt::filesystem::extension(
+				_p);
 
-	if (mime_pair.first != FCPPT_TEXT("application/octet-stream"))
-		return mime_pair.first;
+		return 
+			FCPPT_TEXT("fictional/")+e;
+	}
 
-	fcppt::string const e = 
-		fcppt::filesystem::extension(
-			_p);
+	if (mime_pair.first == FCPPT_TEXT("application/x-bzip2"))
+		return 
+			is_suffix(
+				FCPPT_TEXT(".tar.bz2"),
+				_p.string())
+			? FCPPT_TEXT("fictional/tarbz2")
+			: mime_pair.first;
+	if (mime_pair.first == FCPPT_TEXT("application/x-gzip"))
+		return 
+			is_suffix(
+				FCPPT_TEXT(".tar.gz"),
+				_p.string())
+			? FCPPT_TEXT("fictional/targz")
+			: mime_pair.first;
 
-	return e;
+	return 
+		mime_pair.first;
 }

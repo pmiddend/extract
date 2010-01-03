@@ -35,6 +35,11 @@ public:
 
 	virtual
 	~base();
+protected:
+	fcppt::filesystem::path const
+	real_target_path(
+		fcppt::filesystem::path const &,
+		mime_type const &);
 private:
 	mime_set const mimes_;
 	extract::environment const &environment_;

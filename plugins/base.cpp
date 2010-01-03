@@ -1,4 +1,8 @@
 #include "base.hpp"
+#include "../file_sequence_to_file_tree.hpp"
+#include "../bomb_directory.hpp"
+#include <fcppt/text.hpp>
+#include <fcppt/exception.hpp>
 
 extract::plugins::base::base(
 	mime_set const &_mimes,
@@ -25,4 +29,32 @@ extract::plugins::base::environment() const
 
 extract::plugins::base::~base()
 {
+}
+
+fcppt::filesystem::path const
+extract::plugins::base::real_target_path(
+	fcppt::filesystem::path const &_p,
+	mime_type const &_m)
+{
+	fcppt::filesystem::path target_path = 
+		environment().target_path()
+		?
+			*environment().target_path()
+		: 
+			FCPPT_TEXT(".");
+	
+	if(
+		file_sequence_to_file_tree(
+			list(
+				_p,
+				_m),
+			FCPPT_TEXT(".")).size() > 1)
+	{
+		target_path /= 
+			bomb_directory(
+				_p);
+	}
+
+	return 
+		target_path;
 }

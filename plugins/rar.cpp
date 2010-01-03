@@ -1,13 +1,11 @@
 #include "rar.hpp"
 #include "../process/exec.hpp"
-#include "../process/call.hpp"
-#include "../file_sequence_to_file_tree.hpp"
-#include "../bomb_directory.hpp"
+#include "../process/call_safe.hpp"
+#include "../unlines.hpp"
 #include <fcppt/assign/make_container.hpp>
 #include <fcppt/text.hpp>
+#include <fcppt/exception.hpp>
 #include <fcppt/io/cerr.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
 #include <boost/foreach.hpp>
 
 fcppt::string const extract::plugins::rar::command_name_(
@@ -18,10 +16,9 @@ extract::plugins::rar::rar(
 :
 	base(
 		fcppt::assign::make_container<mime_set>
-			(fcppt::string(FCPPT_TEXT("application/x-rar"))),
+			(FCPPT_TEXT("application/x-rar")),
 		_env)
 {
-	
 }
 
 void
@@ -48,28 +45,8 @@ extract::plugins::rar::process(
 	args.push_back(
 		_p.string());
 	
-	fcppt::filesystem::path target_path = 
-		environment().target_path()
-		?
-			*environment().target_path()
-		: 
-			FCPPT_TEXT(".");
-	
-	if(
-		file_sequence_to_file_tree(
-			list(
-				_p,
-				_m),
-			FCPPT_TEXT(".")).size() > 1)
-	{
-		target_path /= 
-			bomb_directory(
-				_p);
-		fcppt::io::cerr << target_path.string() << "\n";
-	}
-
 	args.push_back(
-		target_path.string()+FCPPT_TEXT("/")); // NOTE: There _has_ to be a trailing / so rar accepts it as a target directory
+		real_target_path(_p,_m).string()+FCPPT_TEXT("/")); // NOTE: There _has_ to be a trailing / so rar accepts it as a target directory
 	
 	process::exec(
 		args);
@@ -80,19 +57,19 @@ extract::plugins::rar::list(
 	fcppt::filesystem::path const &_p,
 	mime_type const &)
 {
-	file_sequence s;
-	fcppt::string result = 
-		process::call(
+	process::output out = 
+		process::call_safe(
 			fcppt::assign::make_container<process::argument_list>
 				(command_name_)
 				(FCPPT_TEXT("vb"))
 				(_p.string()));
-	result.erase(
-		--result.end());
-	boost::algorithm::split(
-		s,
-		result,
-		boost::algorithm::is_any_of(
-			FCPPT_TEXT("\n")));
-	return s;
+	if (!out.err.empty())
+		throw fcppt::exception(
+			FCPPT_TEXT("The error stream contains the following (unexpected) data: ")+
+			out.err);
+	out.out.erase(
+		--out.out.end());
+	return 
+		unlines(
+			out.out);
 }

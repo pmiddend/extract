@@ -13,7 +13,7 @@
 #include <cstring>
 #include <cerrno>
 
-fcppt::string const
+extract::process::output const
 extract::process::call(
 	argument_list const &_args)
 {
@@ -58,40 +58,6 @@ extract::process::call(
 		
 		exec(
 			_args);
-#if 0
-		char **newargv = 
-			new char*[
-				static_cast<std::size_t>(
-					_args.size()+1)];
-		for(
-			std::size_t i = 
-				static_cast<std::size_t>(0); 
-			i < _args.size(); 
-			++i)
-		{
-			newargv[i] = 
-				new char[
-					static_cast<std::size_t>(
-						_args[i].size()+1)];
-			std::strcpy(
-				newargv[i],
-				_args[i].c_str());
-		}
-		newargv[
-			static_cast<std::size_t>(
-				_args.size())] = 0;
-
-		execvp(
-			_args.begin()->c_str(),
-			newargv);
-
-		throw 
-			fcppt::exception(
-				fcppt::string(
-					FCPPT_TEXT("execvp failed: "))+
-				fcppt::error::strerror(
-					errno));
-#endif
 	}
 
 	close(
@@ -111,8 +77,7 @@ extract::process::call(
 		err_pipe[reading_end],
 		&master_fds);
 
-	fcppt::string 
-		output;
+	output out;
 	int eof_count = 
 		0;
 	while (eof_count < 2)
@@ -143,6 +108,11 @@ extract::process::call(
 				err_pipe[reading_end] 
 			};
 
+		fcppt::string *outs[2] = 
+			{
+				&out.out,
+				&out.err
+			};
 		for (int i = 0; i < 2; ++i)
 		{
 			if (!FD_SET(fds[i],&read_fds))
@@ -174,18 +144,17 @@ extract::process::call(
 					fcppt::exception(
 						FCPPT_TEXT("read failed"));
 
-			output.insert(
-				output.end(),
+			outs[i]->insert(
+				outs[i]->end(),
 				char_buffer,
 				char_buffer + b);
 		}
 	}
 	
-	int status;
 	waitpid(
 		pid,
-		(&status),
+		(&out.exit_code),
 		0);
 	
-	return output;
+	return out;
 }

@@ -4,6 +4,7 @@
 #include "list_files.hpp"
 #include "plugins/rar.hpp"
 #include "plugins/zip.hpp"
+#include "plugins/tar.hpp"
 #include <fcppt/io/cout.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/assign/make_container.hpp>
@@ -121,6 +122,11 @@ try
 	if (is_runnable(FCPPT_TEXT("zip")))
 		plugs.push_back(
 			new extract::plugins::zip(
+				env));
+
+	if (is_runnable(FCPPT_TEXT("tar")))
+		plugs.push_back(
+			new extract::plugins::tar(
 				env));
 	
 	plugin_sequence::iterator i = 

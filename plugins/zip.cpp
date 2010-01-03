@@ -1,8 +1,6 @@
 #include "zip.hpp"
 #include "../process/exec.hpp"
-#include "../process/call.hpp"
-#include "../file_sequence_to_file_tree.hpp"
-#include "../bomb_directory.hpp"
+#include "../process/call_safe.hpp"
 #include <fcppt/assign/make_container.hpp>
 #include <fcppt/io/istringstream.hpp>
 #include <fcppt/text.hpp>
@@ -108,7 +106,7 @@ extract::plugins::zip::zip(
 :
 	base(
 		fcppt::assign::make_container<mime_set>
-			(fcppt::string(FCPPT_TEXT("application/zip"))),
+			(FCPPT_TEXT("application/zip")),
 		_env)
 {
 	
@@ -132,31 +130,13 @@ extract::plugins::zip::process(
 	args.push_back(
 		_p.string());
 
-	fcppt::filesystem::path target_path = 
-		environment().target_path()
-		?
-			*environment().target_path()
-		: 
-			FCPPT_TEXT(".");
-	
-	if(
-		file_sequence_to_file_tree(
-			list(
-				_p,
-				_m),
-			FCPPT_TEXT(".")).size() > 1)
-	{
-		target_path /= 
-			bomb_directory(
-				_p);
-		fcppt::io::cerr << target_path.string() << "\n";
-	}
-	
 	args.push_back(
 		FCPPT_TEXT("-d"));
 
 	args.push_back(
-		target_path.string());
+		real_target_path(
+			_p,
+			_m).string());
 	
 	process::exec(
 		args);
@@ -167,12 +147,20 @@ extract::plugins::zip::list(
 	fcppt::filesystem::path const &_p,
 	mime_type const &)
 {
-	fcppt::io::istringstream ss(
-		process::call(
+	process::output const out = 
+		process::call_safe(
 			fcppt::assign::make_container<process::argument_list>
 				(command_name_)
 				(FCPPT_TEXT("-l"))
-				(_p.string())));
+				(_p.string()));
+	
+	if (!out.err.empty())
+		throw fcppt::exception(
+			FCPPT_TEXT("zip command got the following error: ")+
+			out.err);
+
+	fcppt::io::istringstream ss(
+		out.out);
 	
 	fcppt::string first_line,second_line;
 	std::getline(
