@@ -1,0 +1,43 @@
+#!/bin/bash
+
+extractdir="extracted"
+filename="archiv.keineendung"
+files="datei1 datei2 verzwickte"
+
+function restart
+{
+	echo "now testing " $1 " plugin, please press enter"
+	read line
+	yes | head -n 1000
+	rm -rf $extractdir
+	mkdir $extractdir
+	rm $filename
+}
+
+function run
+{
+	echo "file created, listing file contents"
+	../extract --list $1
+	echo "extracting file contents to $targetdir/"
+	../extract --target-dir $extractdir $1
+	echo "extractdir contents: "
+	find $extractdir
+}
+
+restart "zip";
+
+echo "now creating zip file"
+zip -r $filename $files
+run $filename
+
+restart "rar";
+
+echo "now creating rar file"
+rar a -r $filename $files
+run $filename
+
+restart "tar";
+
+echo "now creating tar file"
+tar cjf "datei.tar.bz2" $files
+run "datei.tar.bz2"
