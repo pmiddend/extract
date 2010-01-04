@@ -41,3 +41,6 @@ restart "tar";
 echo "now creating tar file"
 tar cjf "datei.tar.bz2" $files
 run "datei.tar.bz2"
+
+rm -rf $extractdir
+rm -f "datei.tar.bz2"
