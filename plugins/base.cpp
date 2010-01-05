@@ -2,6 +2,7 @@
 #include "../file_sequence_to_file_tree.hpp"
 #include "../bomb_directory.hpp"
 #include <fcppt/text.hpp>
+#include <fcppt/filesystem/exists.hpp>
 #include <fcppt/exception.hpp>
 
 extract::plugins::base::base(
@@ -52,7 +53,11 @@ extract::plugins::base::real_target_path(
 	{
 		target_path /= 
 			bomb_directory(
-				_p);
+				_p.filename());
+
+		if (fcppt::filesystem::exists(target_path))
+			throw fcppt::exception(
+				FCPPT_TEXT("Detected an archive bomb but destination directory ")+target_path.string()+FCPPT_TEXT(" already exists"));
 	}
 
 	return 
