@@ -127,13 +127,13 @@ extract::plugins::zip::process(
 	
 	if (environment().keep_broken())
 		fcppt::io::cerr << FCPPT_TEXT("You specified to keep broken files. Zip doesn't support this, however.\n");
-	
-	args.push_back(
-		_p.string());
 
 	if (!environment().verbose())
 		args.push_back(
-			FCPPT_TEXT("-q"));
+			FCPPT_TEXT("-qq"));
+	
+	args.push_back(
+		_p.string());
 
 	args.push_back(
 		FCPPT_TEXT("-d"));

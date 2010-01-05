@@ -20,7 +20,7 @@ extract::environment::environment(
 		(
 			"verbose,v",
 			boost::program_options::value<bool>()->zero_tokens()->default_value(
-				true),
+				false),
 			"Verbose output")
 		(
 			"target-dir,t",
