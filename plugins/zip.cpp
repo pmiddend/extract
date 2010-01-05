@@ -206,7 +206,9 @@ extract::plugins::zip::list(
 	
 	if (boost::prior(files.end(),2)->find_first_not_of("-") != fcppt::string::npos)
 		throw fcppt::exception(
-			FCPPT_TEXT("Expected the second last line of \"unzip\" output to consist only of '-'. This is not the case, however: "+(*boost::prior(files.end(),2))));
+			FCPPT_TEXT("Expected the second last line of \"unzip\" output to consist only of '-'. This is not the case, however: ")+
+			(*boost::prior(files.end(),2))+
+			FCPPT_TEXT(", last line was: ")+(*--files.end()));
 	
 	if(
 		files.back().find(FCPPT_TEXT("file")) == 
