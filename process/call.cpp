@@ -3,6 +3,7 @@
 #include <fcppt/exception.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/error/strerror.hpp>
+#include <fcppt/io/cerr.hpp>
 #include <fcppt/assert.hpp>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -115,7 +116,7 @@ extract::process::call(
 			};
 		for (int i = 0; i < 2; ++i)
 		{
-			if (!FD_SET(fds[i],&read_fds))
+			if (!FD_ISSET(fds[i],&read_fds))
 				continue;
 
 			ssize_t const buffer_size = 
@@ -132,6 +133,7 @@ extract::process::call(
 			
 			if (b == static_cast<ssize_t>(0))
 			{
+	//			fcppt::io::cerr << "recieved eof on fd " << fds[i] << "\n";
 				eof_count++;
 				FD_CLR(
 					fds[i],
@@ -143,6 +145,8 @@ extract::process::call(
 				throw 
 					fcppt::exception(
 						FCPPT_TEXT("read failed"));
+
+	//		fcppt::io::cerr << "received the following crap: " << fcppt::string(char_buffer,char_buffer+b) << "\n";
 
 			outs[i]->insert(
 				outs[i]->end(),

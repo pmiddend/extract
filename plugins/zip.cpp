@@ -168,20 +168,19 @@ extract::plugins::zip::list(
 		out.out);
 	
 	fcppt::string first_line,second_line;
-	std::getline(
-		ss,
-		first_line);
 	
-	if (ss.eof())
+	if(
+		!std::getline(
+			ss,
+			first_line))
 		throw fcppt::exception(
 			FCPPT_TEXT("Expected at least three lines of output from unzip command, got only one: ")+
 			first_line);
 
-	std::getline(
-		ss,
-		first_line);
-	
-	if (ss.eof())
+	if(
+		!std::getline(
+			ss,
+			first_line))
 		throw fcppt::exception(
 			FCPPT_TEXT("Expected at least three lines of output from unzip command, got only two"));
 	
