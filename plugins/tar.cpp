@@ -2,6 +2,7 @@
 #include "../unlines.hpp"
 #include "../process/exec.hpp"
 #include "../process/call_safe.hpp"
+#include "../is_runnable.hpp"
 #include <fcppt/assign/make_container.hpp>
 #include <fcppt/lexical_cast.hpp>
 #include <fcppt/text.hpp>
@@ -52,7 +53,9 @@ extract::plugins::tar::process(
 		command_name_);
 
 	args.push_back(
-		command_string(_m)+FCPPT_TEXT("xf"));
+		command_string(_m)+
+		(environment().verbose() ? FCPPT_TEXT("v") : FCPPT_TEXT(""))+
+		FCPPT_TEXT("xf"));
 
 	if (environment().password())
 		fcppt::io::cerr << FCPPT_TEXT("You specified a password. tar doesn't support passwords, however.\n");
@@ -107,6 +110,14 @@ extract::plugins::tar::list(
 	return 
 		unlines(
 			out.out);
+}
+
+bool
+extract::plugins::tar::is_available()
+{
+	return 
+		is_runnable(
+			command_name_);
 }
 
 fcppt::string const

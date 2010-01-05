@@ -23,6 +23,9 @@ public:
 
 	fcppt::optional<fcppt::filesystem::path> const
 	target_path() const;
+
+	bool
+	verbose() const;
 private:
 	boost::program_options::variables_map &vm_;
 };

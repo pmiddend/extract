@@ -26,6 +26,9 @@ public:
 	list(
 		fcppt::filesystem::path const &,
 		mime_type const &);
+	
+	static bool
+	is_available();
 private:
 	static fcppt::string const command_name_;
 };

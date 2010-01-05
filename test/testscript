@@ -3,6 +3,7 @@
 extractdir="extracted"
 filename="archiv.keineendung"
 files="datei1 datei2 verzwickte"
+#verbose="-v"
 
 function restart
 {
@@ -19,7 +20,7 @@ function run
 	echo "file created, listing file contents"
 	../extract --list $1
 	echo "extracting file contents to $targetdir/"
-	../extract --target-dir $extractdir $1
+	../extract --target-dir $extractdir $verbose $1
 	echo "extractdir contents: "
 	find $extractdir
 }

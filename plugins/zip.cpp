@@ -1,5 +1,6 @@
 #include "zip.hpp"
 #include "../process/exec.hpp"
+#include "../is_runnable.hpp"
 #include "../process/call_safe.hpp"
 #include <fcppt/assign/make_container.hpp>
 #include <fcppt/io/istringstream.hpp>
@@ -130,6 +131,10 @@ extract::plugins::zip::process(
 	args.push_back(
 		_p.string());
 
+	if (!environment().verbose())
+		args.push_back(
+			FCPPT_TEXT("-q"));
+
 	args.push_back(
 		FCPPT_TEXT("-d"));
 
@@ -226,4 +231,12 @@ extract::plugins::zip::list(
 		files.end());
 	
 	return files;
+}
+
+bool
+extract::plugins::zip::is_available()
+{
+	return 
+		is_runnable(
+			command_name_);
 }

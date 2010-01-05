@@ -2,6 +2,7 @@
 #include "../process/exec.hpp"
 #include "../process/call_safe.hpp"
 #include "../unlines.hpp"
+#include "../is_runnable.hpp"
 #include <fcppt/assign/make_container.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/exception.hpp>
@@ -41,6 +42,10 @@ extract::plugins::rar::process(
 	if (environment().keep_broken())
 		args.push_back(
 			FCPPT_TEXT("-kb"));
+
+	if (!environment().verbose())
+		args.push_back(
+			FCPPT_TEXT("-idc"));
 	
 	args.push_back(
 		_p.string());
@@ -72,4 +77,12 @@ extract::plugins::rar::list(
 	return 
 		unlines(
 			out.out);
+}
+
+bool
+extract::plugins::rar::is_available()
+{
+	return 
+		is_runnable(
+			command_name_);
 }

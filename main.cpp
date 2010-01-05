@@ -1,17 +1,14 @@
 #include "determine_mime_type.hpp"
 #include "environment.hpp"
-#include "full_path.hpp"
 #include "list_files.hpp"
-#include "plugins/rar.hpp"
-#include "plugins/zip.hpp"
-#include "plugins/tar.hpp"
+#include "plugin_types.hpp"
 #include <fcppt/io/cout.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/assign/make_container.hpp>
-#include <fcppt/filesystem/is_executable.hpp>
 #include <fcppt/filesystem/exists.hpp>
 #include <fcppt/filesystem/is_regular.hpp>
 #include <fcppt/exception.hpp>
+#include <fcppt/mpl/for_each.hpp>
 #include <fcppt/io/cerr.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/program_options.hpp>
@@ -21,21 +18,43 @@
 
 namespace
 {
-bool
-is_runnable(
-	fcppt::string const &r)
+typedef
+boost::ptr_vector
+<
+	extract::plugins::base
+>
+plugin_sequence;
+
+class plugin_adder
 {
-	fcppt::optional<fcppt::filesystem::path> const p = 
-		extract::full_path(
-			r);
+public:
+	typedef void result_type;
+
+	plugin_adder(
+		plugin_sequence &_plugs,
+		extract::environment &_env)
+	:
+		plugs_(
+			_plugs),
+		env_(
+			_env)
+	{
+	}
 	
-	if (!p)
-		return false;
-	
-	return
-		fcppt::filesystem::is_executable(
-			*p);
-}
+	template<typename T>
+	result_type
+	operator()() const
+	{
+		if (T::is_available())
+			plugs_.push_back(
+				new T(
+					env_));
+	}
+private:
+	plugin_sequence &plugs_;
+	extract::environment &env_;
+};
+
 }
 
 int main(
@@ -108,26 +127,12 @@ try
 		extract::determine_mime_type(
 			p);
 	
-	typedef
-	boost::ptr_vector<extract::plugins::base>
-	plugin_sequence;
-
 	plugin_sequence plugs;
 
-	if (is_runnable(FCPPT_TEXT("rar")))
-		plugs.push_back(
-			new extract::plugins::rar(
-				env));
-
-	if (is_runnable(FCPPT_TEXT("zip")))
-		plugs.push_back(
-			new extract::plugins::zip(
-				env));
-
-	if (is_runnable(FCPPT_TEXT("tar")))
-		plugs.push_back(
-			new extract::plugins::tar(
-				env));
+	fcppt::mpl::for_each<extract::plugin_types>(
+		plugin_adder(
+			plugs,
+			env));
 	
 	plugin_sequence::iterator i = 
 		plugs.end();

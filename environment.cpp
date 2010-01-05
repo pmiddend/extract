@@ -18,6 +18,11 @@ extract::environment::environment(
 				false),
 			"Keep partially extracted (broken) files")
 		(
+			"verbose,v",
+			boost::program_options::value<bool>()->zero_tokens()->default_value(
+				true),
+			"Verbose output")
+		(
 			"target-dir,t",
 			boost::program_options::value<fcppt::string>(),
 			"The directory where to extract the stuff");
@@ -51,4 +56,11 @@ extract::environment::target_path() const
 				vm_["target-dir"].as<fcppt::string>())
 		: 
 			fcppt::optional<fcppt::filesystem::path>();
+}
+
+bool
+extract::environment::verbose() const
+{
+	return 
+		vm_["verbose"].as<bool>();
 }
