@@ -102,7 +102,7 @@ try
 	boost::program_options::notify(
 		vm);
 
-	if (vm.count("help"))
+	if (vm.count("help") || !vm.count("input-file"))
 	{
 		std::cout << options << "\n";
 		return EXIT_SUCCESS;

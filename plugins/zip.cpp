@@ -209,9 +209,9 @@ extract::plugins::zip::list(
 			FCPPT_TEXT("Expected the second last line of \"unzip\" output to consist only of '-'. This is not the case, however: "+(*boost::prior(files.end(),2))));
 	
 	if(
-		files.back().find(FCPPT_TEXT("files")) == 
+		files.back().find(FCPPT_TEXT("file")) == 
 			fcppt::string::npos || 
-		files.back().find(FCPPT_TEXT("files")) == 
+		files.back().find(FCPPT_TEXT("file")) == 
 			static_cast<fcppt::string::size_type>(
 				0))
 		throw fcppt::exception(
