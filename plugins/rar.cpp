@@ -33,6 +33,9 @@ extract::plugins::rar::process(
 
 	args.push_back(
 		FCPPT_TEXT("x"));
+
+	args.push_back(
+		FCPPT_TEXT("-p-"));
 	
 	if (environment().password())
 		args.push_back(
