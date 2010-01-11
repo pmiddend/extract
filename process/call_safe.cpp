@@ -18,7 +18,7 @@ extract::process::call_safe(
 			FCPPT_TEXT(" failed with exit code ")+
 			fcppt::lexical_cast<fcppt::string>(
 				out.exit_code)+
-			FCPPT_TEXT(" and had this to say about it: ")+
+			FCPPT_TEXT(" and had this to say about it: \n")+
 			out.err);
 	
 	return out;

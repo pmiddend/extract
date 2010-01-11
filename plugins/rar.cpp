@@ -9,16 +9,19 @@
 #include <fcppt/io/cerr.hpp>
 #include <boost/foreach.hpp>
 
-fcppt::string const extract::plugins::rar::command_name_(
-	FCPPT_TEXT("rar"));
-
 extract::plugins::rar::rar(
 	extract::environment const &_env)
 :
 	base(
 		fcppt::assign::make_container<mime_set>
 			(FCPPT_TEXT("application/x-rar")),
-		_env)
+		_env),
+	command_name_(
+		is_runnable(FCPPT_TEXT("unrar"))
+		?
+			FCPPT_TEXT("unrar")
+		:
+			FCPPT_TEXT("rar"))
 {
 }
 
@@ -34,8 +37,10 @@ extract::plugins::rar::process(
 	args.push_back(
 		FCPPT_TEXT("x"));
 
+	/*
 	args.push_back(
 		FCPPT_TEXT("-p-"));
+		*/
 	
 	if (environment().password())
 		args.push_back(
@@ -87,5 +92,7 @@ extract::plugins::rar::is_available()
 {
 	return 
 		is_runnable(
-			command_name_);
+			FCPPT_TEXT("unrar")) || 
+		is_runnable(
+			FCPPT_TEXT("rar"));
 }
