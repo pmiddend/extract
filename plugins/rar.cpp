@@ -61,6 +61,12 @@ extract::plugins::rar::process(
 	args.push_back(
 		real_target_path(_p,_m).string()+FCPPT_TEXT("/")); // NOTE: There _has_ to be a trailing / so rar accepts it as a target directory
 	
+	/*
+	fcppt::io::cerr << "executing the following command:";
+	BOOST_FOREACH(fcppt::string const &s,args)
+		fcppt::io::cerr << s << "\n";
+		*/
+	
 	process::exec(
 		args);
 }
@@ -70,12 +76,21 @@ extract::plugins::rar::list(
 	fcppt::filesystem::path const &_p,
 	mime_type const &)
 {
+	process::argument_list args;
+	args.push_back(
+		command_name_);
+	args.push_back(
+		FCPPT_TEXT("vb"));
+	if (environment().password())
+		args.push_back(
+			FCPPT_TEXT("-p")+
+			(*environment().password()));
+	args.push_back(
+		_p.string());
+
 	process::output out = 
 		process::call_safe(
-			fcppt::assign::make_container<process::argument_list>
-				(command_name_)
-				(FCPPT_TEXT("vb"))
-				(_p.string()));
+			args);
 	if (!out.err.empty())
 		throw fcppt::exception(
 			FCPPT_TEXT("The error stream contains the following (unexpected) data: ")+
