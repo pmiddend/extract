@@ -30,7 +30,7 @@ public:
 	static bool
 	is_available();
 private:
-	static fcppt::string const command_name_;
+	fcppt::string command_name_;
 };
 }
 }

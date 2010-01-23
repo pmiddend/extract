@@ -123,7 +123,13 @@ extract::plugins::zip::process(
 		command_name_);
 
 	if (environment().password())
+	{
+		args.push_back(
+			FCPPT_TEXT("-P"));
+		args.push_back(
+			*environment().password());
 		fcppt::io::cerr << FCPPT_TEXT("You specified a password. Zip doesn't support passwords, however.\n");
+	}
 	
 	if (environment().keep_broken())
 		fcppt::io::cerr << FCPPT_TEXT("You specified to keep broken files. Zip doesn't support this, however.\n");
