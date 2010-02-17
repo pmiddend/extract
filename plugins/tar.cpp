@@ -37,6 +37,7 @@ extract::plugins::tar::tar(
 	base(
 		fcppt::assign::make_container<mime_set>
 			(FCPPT_TEXT("application/x-tar"))
+			(FCPPT_TEXT("application/x-gzip"))
 			(FCPPT_TEXT("fictional/targz"))
 			(FCPPT_TEXT("fictional/tarbz2")),
 		_env)
@@ -124,7 +125,7 @@ fcppt::string const
 extract::plugins::tar::command_string(
 	mime_type const &_m)
 {
-	if (_m == FCPPT_TEXT("fictional/targz"))
+	if (_m == FCPPT_TEXT("fictional/targz") || _m == FCPPT_TEXT("application/x-gzip"))
 		return FCPPT_TEXT("z");
 	if (_m == FCPPT_TEXT("fictional/tarbz2"))
 		return FCPPT_TEXT("j");
