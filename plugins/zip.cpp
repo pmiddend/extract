@@ -27,9 +27,11 @@ extract_name(
 	fcppt::string const first_line,
 	fcppt::string const second_line)
 {
+	/*
 		if (second_line.size() != first_line.size())
 			throw fcppt::exception(
 				FCPPT_TEXT("The first line of output should have the same number of characters as the second line, this is not the case: \"")+first_line+FCPPT_TEXT("\" vs. \"")+second_line+FCPPT_TEXT("\""));
+				*/
 		
 		if (second_line.find_first_not_of(FCPPT_TEXT("- ")) != fcppt::string::npos)
 			throw fcppt::exception(
@@ -163,6 +165,7 @@ extract::plugins::zip::list(
 			fcppt::assign::make_container<process::argument_list>
 				(command_name_)
 				(FCPPT_TEXT("-l"))
+				(FCPPT_TEXT("-q"))
 				(_p.string()));
 	
 	if (!out.err.empty())
@@ -175,6 +178,8 @@ extract::plugins::zip::list(
 	
 	fcppt::string first_line,second_line;
 	
+// Why is this here?
+#if 0
 	if(
 		!std::getline(
 			ss,
@@ -182,6 +187,7 @@ extract::plugins::zip::list(
 		throw fcppt::exception(
 			FCPPT_TEXT("Expected at least three lines of output from unzip command, got only one: ")+
 			first_line);
+#endif
 
 	if(
 		!std::getline(
