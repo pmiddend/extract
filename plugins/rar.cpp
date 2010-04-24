@@ -14,7 +14,8 @@ extract::plugins::rar::rar(
 :
 	base(
 		fcppt::assign::make_container<mime_set>
-			(FCPPT_TEXT("application/x-rar")),
+			(FCPPT_TEXT("application/x-rar"))
+			(FCPPT_TEXT("fictional/.rar")),
 		_env),
 	command_name_(
 		is_runnable(FCPPT_TEXT("unrar"))

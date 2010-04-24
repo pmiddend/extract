@@ -7,9 +7,11 @@
 #include <fcppt/assign/make_container.hpp>
 #include <fcppt/filesystem/exists.hpp>
 #include <fcppt/filesystem/is_regular.hpp>
+#include <fcppt/filesystem/extension.hpp>
 #include <fcppt/exception.hpp>
 #include <fcppt/mpl/for_each.hpp>
 #include <fcppt/io/cerr.hpp>
+#include <fcppt/io/clog.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/program_options.hpp>
 #include <boost/foreach.hpp>
@@ -123,7 +125,7 @@ try
 		return EXIT_FAILURE;
 	}
 	
-	extract::mime_type const m = 
+	extract::mime_type m = 
 		extract::determine_mime_type(
 			p);
 	
@@ -142,13 +144,32 @@ try
 	
 	if (i == plugs.end())
 	{
-		fcppt::io::cerr 
+		fcppt::io::clog 
 			<< FCPPT_TEXT("There was no matching extract plugin for file ") 
 			<< p 
-			<< FCPPT_TEXT(" which has mime type: ") 
+			<< FCPPT_TEXT(" which has mime type:\n ") 
 			<< m
-			<< FCPPT_TEXT("\n");
-		return EXIT_FAILURE;
+			<< FCPPT_TEXT("\n... trying to guess from the file extension.\n");
+
+		m = 
+			FCPPT_TEXT("fictional/")+
+			fcppt::filesystem::extension(
+				p);
+
+		for (i = plugs.begin(); i != plugs.end(); ++i)
+			if (i->mimes().find(m) != i->mimes().end())
+				break;
+		
+		if (i == plugs.end())
+		{
+			fcppt::io::cerr 
+				<< FCPPT_TEXT("Sorry, the extension \"") 
+				<< 
+					fcppt::filesystem::extension(
+						p)
+				<< FCPPT_TEXT(" is unknown, too. :(\n");
+			return EXIT_FAILURE;
+		}
 	}
 
 	if (vm["list"].as<bool>())
