@@ -109,7 +109,8 @@ extract::plugins::zip::zip(
 :
 	base(
 		fcppt::assign::make_container<mime_set>
-			(FCPPT_TEXT("application/zip")),
+			(FCPPT_TEXT("application/zip"))
+			(FCPPT_TEXT("fictional/.zip")),
 		_env)
 {
 	

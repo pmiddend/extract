@@ -22,5 +22,5 @@ extract::bomb_directory(
 			);
 			*/
 	return 
-		_p.filename()+FCPPT_TEXT(".dir");
+		_p.filename().string()+FCPPT_TEXT(".dir");
 }

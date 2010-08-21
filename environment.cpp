@@ -52,8 +52,9 @@ extract::environment::target_path() const
 	return 
 		vm_.count("target-dir")
 		? 
-			fcppt::filesystem::path(
-				vm_["target-dir"].as<fcppt::string>())
+			fcppt::optional<fcppt::filesystem::path>(
+				fcppt::filesystem::path(
+					vm_["target-dir"].as<fcppt::string>()))
 		: 
 			fcppt::optional<fcppt::filesystem::path>();
 }
