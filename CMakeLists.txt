@@ -21,6 +21,7 @@ ENDIF()
 FIND_PACKAGE(
 	Boost 1.41.0 COMPONENTS
 	program_options
+	system
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIR})
