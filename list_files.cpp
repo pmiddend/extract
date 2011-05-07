@@ -38,15 +38,17 @@ extract::list_files(
 	fcppt::filesystem::path const &_p,
 	mime_type const &_m)
 {
-	file_tree const t = 
-		file_sequence_to_file_tree(
-			_b.list(
-				_p,
-				_m),
+	file_tree tree(
 		_p.string());
+
+	file_sequence_to_file_tree(
+		tree,
+		_b.list(
+			_p,
+			_m));
 	
 	output(
 		fcppt::io::cout,
-		t,
+		tree,
 		0u);
 }

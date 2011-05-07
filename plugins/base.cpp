@@ -44,12 +44,18 @@ extract::plugins::base::real_target_path(
 		: 
 			FCPPT_TEXT(".");
 	
+	file_tree tree(
+		FCPPT_TEXT(".")
+	);
+
+	file_sequence_to_file_tree(
+		tree,
+		list(
+			_p,
+			_m));
 	if(
-		file_sequence_to_file_tree(
-			list(
-				_p,
-				_m),
-			FCPPT_TEXT(".")).size() > 1)
+		tree.size() > 1
+	)
 	{
 		target_path /= 
 			bomb_directory(

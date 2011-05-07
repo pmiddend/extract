@@ -6,10 +6,10 @@
 
 namespace extract
 {
-file_tree const 
+void
 file_sequence_to_file_tree(
-	file_sequence const &,
-	fcppt::string const &root);
+	file_tree &,
+	file_sequence const &);
 }
 
 #endif

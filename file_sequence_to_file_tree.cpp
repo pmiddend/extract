@@ -59,20 +59,15 @@ analyze_part(
 }
 }
 
-extract::file_tree const 
+void
 extract::file_sequence_to_file_tree(
-	file_sequence const &_s,
-	fcppt::string const &_root)
+	extract::file_tree & _ret,
+	file_sequence const &_s)
 {
-	file_tree t(
-		_root);
-	
 	BOOST_FOREACH(
 		file_sequence::const_reference r,
 		_s)
 		analyze_part(
-			t,
+			_ret,
 			r);
-
-	return t;
 }
