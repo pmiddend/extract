@@ -32,6 +32,8 @@ FILE(
 
 ADD_EXECUTABLE(extract ${basefiles} ${collectionsfiles})
 
+ADD_DEFINITIONS(${Fcppt_DEFINITIONS})
+
 TARGET_LINK_LIBRARIES(
 	extract
 	${Fcppt_LIBRARIES}
