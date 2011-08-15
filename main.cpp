@@ -42,7 +42,7 @@ public:
 			_env)
 	{
 	}
-	
+
 	template<typename T>
 	result_type
 	operator()() const
@@ -100,7 +100,7 @@ try
 					positional)
 				.run(),
 		vm);
-	
+
 	boost::program_options::notify(
 		vm);
 
@@ -110,9 +110,9 @@ try
 		return EXIT_SUCCESS;
 	}
 
-	fcppt::filesystem::path const p = 
+	fcppt::filesystem::path const p =
 		vm["input-file"].as<fcppt::string>();
-	
+
 	if (!fcppt::filesystem::exists(p))
 	{
 		fcppt::io::cerr << FCPPT_TEXT("The specified file \"") << p << FCPPT_TEXT("\" doesn't exist!\n");
@@ -124,34 +124,34 @@ try
 		fcppt::io::cerr << FCPPT_TEXT("The specified file \"") << p << FCPPT_TEXT("\" is not a regular file!\n");
 		return EXIT_FAILURE;
 	}
-	
-	extract::mime_type m = 
+
+	extract::mime_type m =
 		extract::determine_mime_type(
 			p);
-	
+
 	plugin_sequence plugs;
 
 	fcppt::mpl::for_each<extract::plugin_types>(
 		plugin_adder(
 			plugs,
 			env));
-	
-	plugin_sequence::iterator i = 
+
+	plugin_sequence::iterator i =
 		plugs.end();
 	for (i = plugs.begin(); i != plugs.end(); ++i)
 		if (i->mimes().find(m) != i->mimes().end())
 			break;
-	
+
 	if (i == plugs.end())
 	{
-		fcppt::io::clog 
-			<< FCPPT_TEXT("There was no matching extract plugin for file ") 
-			<< p 
-			<< FCPPT_TEXT(" which has mime type:\n ") 
+		fcppt::io::clog
+			<< FCPPT_TEXT("There was no matching extract plugin for file ")
+			<< p
+			<< FCPPT_TEXT(" which has mime type:\n ")
 			<< m
 			<< FCPPT_TEXT("\n... trying to guess from the file extension.\n");
 
-		m = 
+		m =
 			FCPPT_TEXT("fictional/")+
 			fcppt::filesystem::extension(
 				p);
@@ -159,12 +159,12 @@ try
 		for (i = plugs.begin(); i != plugs.end(); ++i)
 			if (i->mimes().find(m) != i->mimes().end())
 				break;
-		
+
 		if (i == plugs.end())
 		{
-			fcppt::io::cerr 
-				<< FCPPT_TEXT("Sorry, the extension \"") 
-				<< 
+			fcppt::io::cerr
+				<< FCPPT_TEXT("Sorry, the extension \"")
+				<<
 					fcppt::filesystem::extension(
 						p)
 				<< FCPPT_TEXT(" is unknown, too. :(\n");

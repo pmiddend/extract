@@ -14,7 +14,7 @@
 
 namespace
 {
-typedef 
+typedef
 std::pair
 <
 	fcppt::string::size_type,
@@ -32,11 +32,11 @@ extract_name(
 			throw fcppt::exception(
 				FCPPT_TEXT("The first line of output should have the same number of characters as the second line, this is not the case: \"")+first_line+FCPPT_TEXT("\" vs. \"")+second_line+FCPPT_TEXT("\""));
 				*/
-		
+
 		if (second_line.find_first_not_of(FCPPT_TEXT("- ")) != fcppt::string::npos)
 			throw fcppt::exception(
 				FCPPT_TEXT("The second line of output (specifying the column widths) should only contain '-' and ' ' characters. There were other characters, too: ")+second_line);
-		
+
 		if (second_line[0] != FCPPT_TEXT('-'))
 			throw fcppt::exception(
 				FCPPT_TEXT("The second line of output (specifying the column widths) should start with a '-', it doesn't, however: ")+second_line);
@@ -46,13 +46,13 @@ extract_name(
 		fcppt::string::npos);
 
 	for(
-		fcppt::string::size_type i = 
+		fcppt::string::size_type i =
 			static_cast<fcppt::string::size_type>(
 				0);
 		i < second_line.size();)
 	{
-		fcppt::string::size_type const 
-			space_begin = 
+		fcppt::string::size_type const
+			space_begin =
 				second_line.find(
 					FCPPT_TEXT(' '),
 					i);
@@ -62,7 +62,7 @@ extract_name(
 			space_begin == fcppt::string::npos
 			?
 				second_line.size()
-			: 
+			:
 				space_begin);
 
 		if(
@@ -80,7 +80,7 @@ extract_name(
 			break;
 
 		fcppt::string::size_type const
-			space_end = 
+			space_end =
 				second_line.find(
 					FCPPT_TEXT('-'),
 					space_begin);
@@ -95,8 +95,8 @@ extract_name(
 	if (name_column.first == fcppt::string::npos || name_column.second == fcppt::string::npos)
 		throw fcppt::exception(
 			FCPPT_TEXT("Found no column containing \"Name\" in first line: ")+first_line);
-	
-	return 
+
+	return
 		name_column;
 }
 }
@@ -113,7 +113,7 @@ extract::plugins::zip::zip(
 			(FCPPT_TEXT("fictional/.zip")),
 		_env)
 {
-	
+
 }
 
 void
@@ -133,14 +133,14 @@ extract::plugins::zip::process(
 			*environment().password());
 		fcppt::io::cerr << FCPPT_TEXT("You specified a password. Zip doesn't support passwords, however.\n");
 	}
-	
+
 	if (environment().keep_broken())
 		fcppt::io::cerr << FCPPT_TEXT("You specified to keep broken files. Zip doesn't support this, however.\n");
 
 	if (!environment().verbose())
 		args.push_back(
 			FCPPT_TEXT("-qq"));
-	
+
 	args.push_back(
 		_p.string());
 
@@ -151,7 +151,7 @@ extract::plugins::zip::process(
 		real_target_path(
 			_p,
 			_m).string());
-	
+
 	process::exec(
 		args);
 }
@@ -161,14 +161,14 @@ extract::plugins::zip::list(
 	fcppt::filesystem::path const &_p,
 	mime_type const &)
 {
-	process::output const out = 
+	process::output const out =
 		process::call_safe(
 			fcppt::assign::make_container<process::argument_list>
 				(command_name_)
 				(FCPPT_TEXT("-l"))
 				(FCPPT_TEXT("-q"))
 				(_p.string()));
-	
+
 	if (!out.err.empty())
 		throw fcppt::exception(
 			FCPPT_TEXT("zip command got the following error: ")+
@@ -176,9 +176,9 @@ extract::plugins::zip::list(
 
 	fcppt::io::istringstream ss(
 		out.out);
-	
+
 	fcppt::string first_line,second_line;
-	
+
 // Why is this here?
 #if 0
 	if(
@@ -196,16 +196,16 @@ extract::plugins::zip::list(
 			first_line))
 		throw fcppt::exception(
 			FCPPT_TEXT("Expected at least three lines of output from unzip command, got only two"));
-	
+
 	std::getline(
 		ss,
 		second_line);
-	
-	index_pair const name_column = 
+
+	index_pair const name_column =
 		extract_name(
 			first_line,
 			second_line);
-	
+
 	file_sequence files;
 	fcppt::string line;
 	while(
@@ -215,42 +215,42 @@ extract::plugins::zip::list(
 		files.push_back(
 			line.substr(
 				name_column.first));
-	
+
 	if (boost::prior(files.end(),2)->find_first_not_of("-") != fcppt::string::npos)
 		throw fcppt::exception(
 			FCPPT_TEXT("Expected the second last line of \"unzip\" output to consist only of '-'. This is not the case, however: ")+
 			(*boost::prior(files.end(),2))+
 			FCPPT_TEXT(", last line was: ")+(*--files.end()));
-	
+
 	if(
-		files.back().find(FCPPT_TEXT("file")) == 
-			fcppt::string::npos || 
-		files.back().find(FCPPT_TEXT("file")) == 
+		files.back().find(FCPPT_TEXT("file")) ==
+			fcppt::string::npos ||
+		files.back().find(FCPPT_TEXT("file")) ==
 			static_cast<fcppt::string::size_type>(
 				0))
 		throw fcppt::exception(
 			FCPPT_TEXT("Expected the last line of \"unzip\" output to be of the form \"<number> files\", this is not the case: ")+files.back());
-	
+
 	fcppt::lexical_cast<fcppt::string::size_type>(
 		files.back().substr(
 			static_cast<fcppt::string::size_type>(
 				0),
 			static_cast<fcppt::string::size_type>(
 				files.back().find("files")-1)));
-	
+
 	files.erase(
 		boost::prior(
 			files.end(),
 			2),
 		files.end());
-	
+
 	return files;
 }
 
 bool
 extract::plugins::zip::is_available()
 {
-	return 
+	return
 		is_runnable(
 			command_name_);
 }

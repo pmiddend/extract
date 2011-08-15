@@ -31,7 +31,7 @@ analyze_part(
 	extract::file_tree &_t,
 	extract::file_sequence::const_reference r)
 {
-	extract::file_tree *t = 
+	extract::file_tree *t =
 		&_t;
 	BOOST_FOREACH(
 		fcppt::string const &p,
@@ -40,7 +40,7 @@ analyze_part(
 			boost::algorithm::is_any_of(
 				FCPPT_TEXT("/"))))
 	{
-		extract::file_tree::iterator i = 
+		extract::file_tree::iterator i =
 			find_child(
 				t->begin(),
 				t->end(),
@@ -50,7 +50,7 @@ analyze_part(
 		{
 			t->push_back(
 				p);
-			i = 
+			i =
 				--t->end();
 		}
 

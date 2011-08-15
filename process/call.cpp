@@ -22,10 +22,10 @@ extract::process::call(
 		!_args.empty());
 
 	std::size_t const
-		reading_end = 
+		reading_end =
 			static_cast<std::size_t>(
 				0),
-		writing_end = 
+		writing_end =
 			static_cast<std::size_t>(
 				1);
 
@@ -33,11 +33,11 @@ extract::process::call(
 	int err_pipe[2];
 
 	if (pipe(out_pipe) == -1 || pipe(err_pipe) == -1)
-		throw 
+		throw
 			fcppt::exception(
 				FCPPT_TEXT("one of the pipes failed"));
-	
-	pid_t const pid = 
+
+	pid_t const pid =
 		fork();
 
 	if (pid == 0)
@@ -56,7 +56,7 @@ extract::process::call(
 			out_pipe[writing_end]);
 		close(
 			err_pipe[writing_end]);
-		
+
 		exec(
 			_args);
 	}
@@ -69,7 +69,7 @@ extract::process::call(
 	fd_set master_fds;
 	FD_ZERO(
 		&master_fds);
-	
+
 	FD_SET(
 		out_pipe[reading_end],
 		&master_fds);
@@ -79,18 +79,18 @@ extract::process::call(
 		&master_fds);
 
 	output out;
-	int eof_count = 
+	int eof_count =
 		0;
 	while (eof_count < 2)
 	{
 		fd_set read_fds = master_fds;
 
-		int 
-			maxfd = 
+		int
+			maxfd =
 				std::max(
 					out_pipe[reading_end],
 					err_pipe[reading_end]),
-			select_return = 
+			select_return =
 				select(
 					maxfd+1,
 					&read_fds,
@@ -99,17 +99,17 @@ extract::process::call(
 					0);
 
 		if (select_return == -1)
-			throw 
+			throw
 				fcppt::exception(
 					FCPPT_TEXT("select failed"));
 
-		int const fds[2] = 
-			{ 
+		int const fds[2] =
+			{
 				out_pipe[reading_end],
-				err_pipe[reading_end] 
+				err_pipe[reading_end]
 			};
 
-		fcppt::string *outs[2] = 
+		fcppt::string *outs[2] =
 			{
 				&out.out,
 				&out.err
@@ -119,7 +119,7 @@ extract::process::call(
 			if (!FD_ISSET(fds[i],&read_fds))
 				continue;
 
-			ssize_t const buffer_size = 
+			ssize_t const buffer_size =
 				static_cast<ssize_t>(
 					1024);
 
@@ -130,7 +130,7 @@ extract::process::call(
 				char_buffer,
 				static_cast<std::size_t>(
 					buffer_size-1));
-			
+
 			if (b == static_cast<ssize_t>(0))
 			{
 	//			fcppt::io::cerr << "recieved eof on fd " << fds[i] << "\n";
@@ -140,9 +140,9 @@ extract::process::call(
 					&master_fds);
 				continue;
 			}
-			
+
 			if (b == static_cast<ssize_t>(-1))
-				throw 
+				throw
 					fcppt::exception(
 						FCPPT_TEXT("read failed"));
 
@@ -154,11 +154,11 @@ extract::process::call(
 				char_buffer + b);
 		}
 	}
-	
+
 	waitpid(
 		pid,
 		(&out.exit_code),
 		0);
-	
+
 	return out;
 }

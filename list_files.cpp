@@ -13,14 +13,14 @@ output(
 	C const &c,
 	unsigned const indent)
 {
-	s 
-		<< 
+	s
+		<<
 			fcppt::string(
 				indent,
-				FCPPT_TEXT('\t')) 
-		<< 
-			c.value() 
-		<< 
+				FCPPT_TEXT('\t'))
+		<<
+			c.value()
+		<<
 			FCPPT_TEXT("\n");
 
 	for(typename C::const_iterator i = c.begin(); i != c.end(); ++i)
@@ -46,7 +46,7 @@ extract::list_files(
 		_b.list(
 			_p,
 			_m));
-	
+
 	output(
 		fcppt::io::cout,
 		tree,

@@ -42,12 +42,12 @@ extract::plugins::rar::process(
 	args.push_back(
 		FCPPT_TEXT("-p-"));
 		*/
-	
+
 	if (environment().password())
 		args.push_back(
 			FCPPT_TEXT("-p")+
 			(*environment().password()));
-	
+
 	if (environment().keep_broken())
 		args.push_back(
 			FCPPT_TEXT("-kb"));
@@ -55,19 +55,19 @@ extract::plugins::rar::process(
 	if (!environment().verbose())
 		args.push_back(
 			FCPPT_TEXT("-idc"));
-	
+
 	args.push_back(
 		_p.string());
-	
+
 	args.push_back(
 		real_target_path(_p,_m).string()+FCPPT_TEXT("/")); // NOTE: There _has_ to be a trailing / so rar accepts it as a target directory
-	
+
 	/*
 	fcppt::io::cerr << "executing the following command:";
 	BOOST_FOREACH(fcppt::string const &s,args)
 		fcppt::io::cerr << s << "\n";
 		*/
-	
+
 	process::exec(
 		args);
 }
@@ -89,7 +89,7 @@ extract::plugins::rar::list(
 	args.push_back(
 		_p.string());
 
-	process::output out = 
+	process::output out =
 		process::call_safe(
 			args);
 	if (!out.err.empty())
@@ -98,7 +98,7 @@ extract::plugins::rar::list(
 			out.err);
 	out.out.erase(
 		--out.out.end());
-	return 
+	return
 		unlines(
 			out.out);
 }
@@ -106,9 +106,9 @@ extract::plugins::rar::list(
 bool
 extract::plugins::rar::is_available()
 {
-	return 
+	return
 		is_runnable(
-			FCPPT_TEXT("unrar")) || 
+			FCPPT_TEXT("unrar")) ||
 		is_runnable(
 			FCPPT_TEXT("rar"));
 }

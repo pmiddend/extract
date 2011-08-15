@@ -16,7 +16,7 @@ public:
 	base(
 		mime_set const &,
 		extract::environment const &);
-	
+
 	mime_set const &
 	mimes() const;
 
@@ -28,7 +28,7 @@ public:
 		fcppt::filesystem::path const &,
 		mime_type const &) = 0;
 
-	virtual file_sequence const 
+	virtual file_sequence const
 	list(
 		fcppt::filesystem::path const &,
 		mime_type const &) = 0;

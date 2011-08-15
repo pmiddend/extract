@@ -12,17 +12,17 @@ void
 extract::process::exec(
 	argument_list const &_args)
 {
-	char **newargv = 
+	char **newargv =
 		new char*[
 			static_cast<std::size_t>(
 				_args.size()+1)];
 	for(
-		std::size_t i = 
-			static_cast<std::size_t>(0); 
-		i < _args.size(); 
+		std::size_t i =
+			static_cast<std::size_t>(0);
+		i < _args.size();
 		++i)
 	{
-		newargv[i] = 
+		newargv[i] =
 			new char[
 				static_cast<std::size_t>(
 					_args[i].size()+1)];
@@ -38,7 +38,7 @@ extract::process::exec(
 		_args.begin()->c_str(),
 		newargv);
 
-	throw 
+	throw
 		fcppt::exception(
 			fcppt::string(
 				FCPPT_TEXT("execvp failed: "))+

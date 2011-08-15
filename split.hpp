@@ -17,7 +17,7 @@ split(
 	Functor f)
 {
 	std::vector<Input> out;
-	return 
+	return
 		boost::algorithm::split(
 			out,
 			in,

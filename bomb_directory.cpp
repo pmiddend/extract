@@ -6,21 +6,21 @@ extract::bomb_directory(
 	fcppt::filesystem::path const &_p)
 {
 	/*
-	fcppt::string::size_type const p = 
+	fcppt::string::size_type const p =
 		_p.filename().find(
 			FCPPT_TEXT('.'));
 
 	if (p == fcppt::string::npos)
-		return 
+		return
 			_p.filename()+FCPPT_TEXT(".dir");
 			*/
 
 	/*
-	return 
+	return
 		_p.filename().substr(
 			0,
 			);
 			*/
-	return 
+	return
 		_p.filename().string()+FCPPT_TEXT(".dir");
 }

@@ -18,7 +18,7 @@ public:
 	fcppt::optional<fcppt::string> const
 	password() const;
 
-	bool 
+	bool
 	keep_broken() const;
 
 	fcppt::optional<fcppt::filesystem::path> const

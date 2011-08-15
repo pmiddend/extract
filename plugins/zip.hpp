@@ -15,7 +15,7 @@ public:
 	explicit
 	zip(
 		extract::environment const &);
-	
+
 	void
 	process(
 		fcppt::filesystem::path const &,
@@ -25,7 +25,7 @@ public:
 	list(
 		fcppt::filesystem::path const &,
 		mime_type const &);
-	
+
 	static bool
 	is_available();
 private:

@@ -20,7 +20,7 @@ is_prefix(
 	fcppt::string const &_prefix,
 	fcppt::string const &_str)
 {
-	return 
+	return
 		_str.compare(
 			0,
 			_prefix.size(),
@@ -69,25 +69,25 @@ extract::plugins::tar::process(
 
 	args.push_back(
 		FCPPT_TEXT("-C"));
-	
-	fcppt::filesystem::path const real = 
+
+	fcppt::filesystem::path const real =
 		real_target_path(_p,_m);
 
 	args.push_back(
 		real.string());
-	
+
 	if(
-		fcppt::filesystem::exists(real) && 
+		fcppt::filesystem::exists(real) &&
 		!fcppt::filesystem::is_directory(real))
 		throw fcppt::exception(
 			FCPPT_TEXT("Detected a tar bomb but directory")+
 			real.string()+
 			FCPPT_TEXT(" cannot be created"));
-	
+
 	if (!fcppt::filesystem::exists(real))
 		fcppt::filesystem::create_directory(
 			real);
-	
+
 	process::exec(
 		args);
 }
@@ -97,18 +97,18 @@ extract::plugins::tar::list(
 	fcppt::filesystem::path const &_p,
 	mime_type const &_m)
 {
-	process::output out = 
+	process::output out =
 		process::call_safe(
 			fcppt::assign::make_container<process::argument_list>
 				(command_name_)
 				(command_string(_m)+FCPPT_TEXT("tf"))
 				(_p.string()));
-	
+
 	// erase last newline
 	out.out.erase(
 		--out.out.end());
-	
-	return 
+
+	return
 		unlines(
 			out.out);
 }
@@ -116,7 +116,7 @@ extract::plugins::tar::list(
 bool
 extract::plugins::tar::is_available()
 {
-	return 
+	return
 		is_runnable(
 			command_name_);
 }

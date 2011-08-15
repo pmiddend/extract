@@ -31,37 +31,37 @@ extract::environment::environment(
 fcppt::optional<fcppt::string> const
 extract::environment::password() const
 {
-	return 
+	return
 		vm_.count("password")
-		? 
+		?
 			vm_["password"].as<fcppt::string>()
-		: 
+		:
 			fcppt::optional<fcppt::string>();
 }
 
 bool
 extract::environment::keep_broken() const
 {
-	return 
+	return
 		vm_["keep-broken"].as<bool>();
 }
 
 fcppt::optional<fcppt::filesystem::path> const
 extract::environment::target_path() const
 {
-	return 
+	return
 		vm_.count("target-dir")
-		? 
+		?
 			fcppt::optional<fcppt::filesystem::path>(
 				fcppt::filesystem::path(
 					vm_["target-dir"].as<fcppt::string>()))
-		: 
+		:
 			fcppt::optional<fcppt::filesystem::path>();
 }
 
 bool
 extract::environment::verbose() const
 {
-	return 
+	return
 		vm_["verbose"].as<bool>();
 }

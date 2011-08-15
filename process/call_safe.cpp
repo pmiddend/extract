@@ -7,10 +7,10 @@ extract::process::output const
 extract::process::call_safe(
 	argument_list const &_l)
 {
-	extract::process::output const out = 
+	extract::process::output const out =
 		call(
 			_l);
-	
+
 	if (out.exit_code)
 		throw fcppt::exception(
 			FCPPT_TEXT("The program ")+
@@ -20,6 +20,6 @@ extract::process::call_safe(
 				out.exit_code)+
 			FCPPT_TEXT(" and had this to say about it: \n")+
 			out.err);
-	
+
 	return out;
 }

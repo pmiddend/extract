@@ -15,7 +15,7 @@ extract::plugins::base::base(
 		_environment)
 {
 }
-	
+
 extract::plugins::mime_set const &
 extract::plugins::base::mimes() const
 {
@@ -37,13 +37,13 @@ extract::plugins::base::real_target_path(
 	fcppt::filesystem::path const &_p,
 	mime_type const &_m)
 {
-	fcppt::filesystem::path target_path = 
+	fcppt::filesystem::path target_path =
 		environment().target_path()
 		?
 			*environment().target_path()
-		: 
+		:
 			FCPPT_TEXT(".");
-	
+
 	file_tree tree(
 		FCPPT_TEXT(".")
 	);
@@ -57,7 +57,7 @@ extract::plugins::base::real_target_path(
 		tree.size() > 1
 	)
 	{
-		target_path /= 
+		target_path /=
 			bomb_directory(
 				_p.filename());
 
@@ -66,6 +66,6 @@ extract::plugins::base::real_target_path(
 				FCPPT_TEXT("Detected an archive bomb but destination directory ")+target_path.string()+FCPPT_TEXT(" already exists"));
 	}
 
-	return 
+	return
 		target_path;
 }

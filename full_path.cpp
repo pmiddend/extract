@@ -15,18 +15,18 @@ extract::full_path(
 {
 	FCPPT_ASSERT(
 		!s.empty());
-	
-	char const *path_raw = 
+
+	char const *path_raw =
 		std::getenv("PATH");
-	
+
 	FCPPT_ASSERT(
 		path_raw);
-	
+
 	fcppt::string path(
 		path_raw);
 
 	typedef
-	std::vector<fcppt::string> 
+	std::vector<fcppt::string>
 	part_sequence;
 
 	part_sequence parts;
@@ -35,7 +35,7 @@ extract::full_path(
 		path,
 		boost::algorithm::is_any_of(
 			FCPPT_TEXT(":")));
-	
+
 	BOOST_FOREACH(
 		part_sequence::const_reference r,
 		parts)
@@ -43,10 +43,10 @@ extract::full_path(
 			fcppt::filesystem::exists(
 				fcppt::filesystem::path(r)/
 				s))
-			return 
+			return
 				fcppt::filesystem::path(r)/
 					s;
 
-	return 
+	return
 		fcppt::optional<fcppt::filesystem::path>();
 }
