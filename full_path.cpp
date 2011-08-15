@@ -1,5 +1,7 @@
 #include "full_path.hpp"
-#include <fcppt/assert.hpp>
+#include <fcppt/assert/exception.hpp>
+#include <fcppt/assert/pre.hpp>
+#include <fcppt/assert/throw.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/io/cerr.hpp>
 #include <fcppt/filesystem/exists.hpp>
@@ -13,14 +15,16 @@ fcppt::optional<fcppt::filesystem::path> const
 extract::full_path(
 	fcppt::string const &s)
 {
-	FCPPT_ASSERT(
+	FCPPT_ASSERT_PRE(
 		!s.empty());
 
 	char const *path_raw =
 		std::getenv("PATH");
 
-	FCPPT_ASSERT(
-		path_raw);
+	FCPPT_ASSERT_THROW(
+		path_raw,
+		fcppt::assert_::exception
+	);
 
 	fcppt::string path(
 		path_raw);

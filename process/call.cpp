@@ -4,7 +4,7 @@
 #include <fcppt/text.hpp>
 #include <fcppt/error/strerror.hpp>
 #include <fcppt/io/cerr.hpp>
-#include <fcppt/assert.hpp>
+#include <fcppt/assert/pre.hpp>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/types.h>
@@ -18,7 +18,7 @@ extract::process::output const
 extract::process::call(
 	argument_list const &_args)
 {
-	FCPPT_ASSERT(
+	FCPPT_ASSERT_PRE(
 		!_args.empty());
 
 	std::size_t const
