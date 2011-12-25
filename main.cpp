@@ -2,7 +2,6 @@
 #include "environment.hpp"
 #include "list_files.hpp"
 #include "plugin_types.hpp"
-#include <fcppt/io/cout.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/assign/make_container.hpp>
 #include <fcppt/filesystem/exists.hpp>
@@ -115,13 +114,13 @@ try
 
 	if (!fcppt::filesystem::exists(p))
 	{
-		fcppt::io::cerr << FCPPT_TEXT("The specified file \"") << p << FCPPT_TEXT("\" doesn't exist!\n");
+		fcppt::io::cerr() << FCPPT_TEXT("The specified file \"") << p << FCPPT_TEXT("\" doesn't exist!\n");
 		return EXIT_FAILURE;
 	}
 
 	if (!fcppt::filesystem::is_regular(p))
 	{
-		fcppt::io::cerr << FCPPT_TEXT("The specified file \"") << p << FCPPT_TEXT("\" is not a regular file!\n");
+		fcppt::io::cerr() << FCPPT_TEXT("The specified file \"") << p << FCPPT_TEXT("\" is not a regular file!\n");
 		return EXIT_FAILURE;
 	}
 
@@ -144,7 +143,7 @@ try
 
 	if (i == plugs.end())
 	{
-		fcppt::io::clog
+		fcppt::io::clog()
 			<< FCPPT_TEXT("There was no matching extract plugin for file ")
 			<< p
 			<< FCPPT_TEXT(" which has mime type:\n ")
@@ -162,7 +161,7 @@ try
 
 		if (i == plugs.end())
 		{
-			fcppt::io::cerr
+			fcppt::io::cerr()
 				<< FCPPT_TEXT("Sorry, the extension \"")
 				<<
 					fcppt::filesystem::extension(
@@ -184,11 +183,11 @@ try
 }
 catch (boost::program_options::multiple_occurrences const &e)
 {
-	fcppt::io::cerr << FCPPT_TEXT("Please specify only _one_ input file\n");
+	fcppt::io::cerr() << FCPPT_TEXT("Please specify only _one_ input file\n");
 	return EXIT_FAILURE;
 }
 catch (fcppt::exception const &e)
 {
-	fcppt::io::cerr << FCPPT_TEXT("Caught an exception: ") << e.string() << FCPPT_TEXT("\n");
+	fcppt::io::cerr() << FCPPT_TEXT("Caught an exception: ") << e.string() << FCPPT_TEXT("\n");
 	return EXIT_FAILURE;
 }

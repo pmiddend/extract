@@ -4,7 +4,6 @@
 #include "../process/call_safe.hpp"
 #include "../is_runnable.hpp"
 #include <fcppt/assign/make_container.hpp>
-#include <fcppt/lexical_cast.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/exception.hpp>
 #include <fcppt/io/cerr.hpp>
@@ -59,10 +58,10 @@ extract::plugins::tar::process(
 		FCPPT_TEXT("xf"));
 
 	if (environment().password())
-		fcppt::io::cerr << FCPPT_TEXT("You specified a password. tar doesn't support passwords, however.\n");
+		fcppt::io::cerr() << FCPPT_TEXT("You specified a password. tar doesn't support passwords, however.\n");
 
 	if (environment().keep_broken())
-		fcppt::io::cerr << FCPPT_TEXT("You specified to keep broken files. tar doesn't support this, however.\n");
+		fcppt::io::cerr() << FCPPT_TEXT("You specified to keep broken files. tar doesn't support this, however.\n");
 
 	args.push_back(
 		_p.string());

@@ -3,7 +3,6 @@
 #include <fcppt/assert/pre.hpp>
 #include <fcppt/assert/throw.hpp>
 #include <fcppt/text.hpp>
-#include <fcppt/io/cerr.hpp>
 #include <fcppt/filesystem/exists.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
@@ -48,8 +47,9 @@ extract::full_path(
 				fcppt::filesystem::path(r)/
 				s))
 			return
-				fcppt::filesystem::path(r)/
-					s;
+				fcppt::optional<fcppt::filesystem::path>(
+					fcppt::filesystem::path(r)/
+						s);
 
 	return
 		fcppt::optional<fcppt::filesystem::path>();

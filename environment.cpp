@@ -34,7 +34,8 @@ extract::environment::password() const
 	return
 		vm_.count("password")
 		?
-			vm_["password"].as<fcppt::string>()
+			fcppt::optional<fcppt::string>(
+				vm_["password"].as<fcppt::string>())
 		:
 			fcppt::optional<fcppt::string>();
 }

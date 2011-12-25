@@ -6,7 +6,7 @@
 #include <fcppt/io/istringstream.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/exception.hpp>
-#include <fcppt/lexical_cast.hpp>
+#include <fcppt/extract_from_string_exn.hpp>
 #include <fcppt/io/cerr.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/foreach.hpp>
@@ -131,11 +131,11 @@ extract::plugins::zip::process(
 			FCPPT_TEXT("-P"));
 		args.push_back(
 			*environment().password());
-		fcppt::io::cerr << FCPPT_TEXT("You specified a password. Zip doesn't support passwords, however.\n");
+		fcppt::io::cerr() << FCPPT_TEXT("You specified a password. Zip doesn't support passwords, however.\n");
 	}
 
 	if (environment().keep_broken())
-		fcppt::io::cerr << FCPPT_TEXT("You specified to keep broken files. Zip doesn't support this, however.\n");
+		fcppt::io::cerr() << FCPPT_TEXT("You specified to keep broken files. Zip doesn't support this, however.\n");
 
 	if (!environment().verbose())
 		args.push_back(
@@ -231,7 +231,7 @@ extract::plugins::zip::list(
 		throw fcppt::exception(
 			FCPPT_TEXT("Expected the last line of \"unzip\" output to be of the form \"<number> files\", this is not the case: ")+files.back());
 
-	fcppt::lexical_cast<fcppt::string::size_type>(
+	fcppt::extract_from_string_exn<fcppt::string::size_type>(
 		files.back().substr(
 			static_cast<fcppt::string::size_type>(
 				0),

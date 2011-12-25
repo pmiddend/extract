@@ -1,7 +1,6 @@
 #include "file_sequence_to_file_tree.hpp"
 #include "split.hpp"
 #include <fcppt/text.hpp>
-#include <fcppt/io/cerr.hpp>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>

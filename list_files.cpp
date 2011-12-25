@@ -48,7 +48,7 @@ extract::list_files(
 			_m));
 
 	output(
-		fcppt::io::cout,
+		fcppt::io::cout(),
 		tree,
 		0u);
 }
