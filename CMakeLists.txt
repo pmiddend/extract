@@ -36,7 +36,8 @@ ADD_DEFINITIONS(${Fcppt_DEFINITIONS})
 
 TARGET_LINK_LIBRARIES(
 	extract
-	${Fcppt_LIBRARIES}
+	${Fcppt_core_LIBRARIES}
+	${Fcppt_filesystem_LIBRARIES}
 )
 
 IF(NOT MSVC)
