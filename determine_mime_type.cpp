@@ -48,7 +48,7 @@ is_suffix(
 
 extract::mime_type const
 extract::determine_mime_type(
-	fcppt::filesystem::path const &_p)
+	boost::filesystem::path const &_p)
 {
 	process::output const out =
 		process::call(

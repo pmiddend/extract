@@ -2,7 +2,7 @@
 #define EXTRACT_ENVIRONMENT_HPP_HPP_INCLUDED
 
 #include <fcppt/optional.hpp>
-#include <fcppt/filesystem/path.hpp>
+#include <boost/filesystem/path.hpp>
 #include <fcppt/string.hpp>
 #include <boost/program_options.hpp>
 
@@ -21,7 +21,7 @@ public:
 	bool
 	keep_broken() const;
 
-	fcppt::optional<fcppt::filesystem::path> const
+	fcppt::optional<boost::filesystem::path> const
 	target_path() const;
 
 	bool

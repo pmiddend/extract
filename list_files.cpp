@@ -35,7 +35,7 @@ output(
 void
 extract::list_files(
 	plugins::base &_b,
-	fcppt::filesystem::path const &_p,
+	boost::filesystem::path const &_p,
 	mime_type const &_m)
 {
 	file_tree tree(

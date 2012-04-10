@@ -118,7 +118,7 @@ extract::plugins::zip::zip(
 
 void
 extract::plugins::zip::process(
-	fcppt::filesystem::path const &_p,
+	boost::filesystem::path const &_p,
 	mime_type const &_m)
 {
 	process::argument_list args;
@@ -158,7 +158,7 @@ extract::plugins::zip::process(
 
 extract::file_sequence const
 extract::plugins::zip::list(
-	fcppt::filesystem::path const &_p,
+	boost::filesystem::path const &_p,
 	mime_type const &)
 {
 	process::output const out =

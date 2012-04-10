@@ -28,7 +28,7 @@ extract::plugins::rar::rar(
 
 void
 extract::plugins::rar::process(
-	fcppt::filesystem::path const &_p,
+	boost::filesystem::path const &_p,
 	mime_type const &_m)
 {
 	process::argument_list args;
@@ -74,7 +74,7 @@ extract::plugins::rar::process(
 
 extract::file_sequence const
 extract::plugins::rar::list(
-	fcppt::filesystem::path const &_p,
+	boost::filesystem::path const &_p,
 	mime_type const &)
 {
 	process::argument_list args;

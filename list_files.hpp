@@ -3,14 +3,14 @@
 
 #include "plugins/base.hpp"
 #include "mime_type.hpp"
-#include <fcppt/filesystem/path.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace extract
 {
 void
 list_files(
 	plugins::base &,
-	fcppt::filesystem::path const &,
+	boost::filesystem::path const &,
 	mime_type const &);
 }
 

@@ -4,10 +4,9 @@
 #include "plugin_types.hpp"
 #include <fcppt/text.hpp>
 #include <fcppt/assign/make_container.hpp>
-#include <fcppt/filesystem/exists.hpp>
-#include <fcppt/filesystem/is_regular.hpp>
-#include <fcppt/filesystem/extension.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <fcppt/exception.hpp>
+#include <fcppt/filesystem/extension.hpp>
 #include <fcppt/mpl/for_each.hpp>
 #include <fcppt/io/cerr.hpp>
 #include <fcppt/io/clog.hpp>
@@ -109,16 +108,16 @@ try
 		return EXIT_SUCCESS;
 	}
 
-	fcppt::filesystem::path const p =
+	boost::filesystem::path const p =
 		vm["input-file"].as<fcppt::string>();
 
-	if (!fcppt::filesystem::exists(p))
+	if (!boost::filesystem::exists(p))
 	{
 		fcppt::io::cerr() << FCPPT_TEXT("The specified file \"") << p << FCPPT_TEXT("\" doesn't exist!\n");
 		return EXIT_FAILURE;
 	}
 
-	if (!fcppt::filesystem::is_regular(p))
+	if (!boost::filesystem::is_regular_file(p))
 	{
 		fcppt::io::cerr() << FCPPT_TEXT("The specified file \"") << p << FCPPT_TEXT("\" is not a regular file!\n");
 		return EXIT_FAILURE;

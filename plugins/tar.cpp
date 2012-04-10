@@ -7,9 +7,7 @@
 #include <fcppt/text.hpp>
 #include <fcppt/exception.hpp>
 #include <fcppt/io/cerr.hpp>
-#include <fcppt/filesystem/exists.hpp>
-#include <fcppt/filesystem/is_directory.hpp>
-#include <fcppt/filesystem/create_directory.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
 
 namespace
@@ -45,7 +43,7 @@ extract::plugins::tar::tar(
 
 void
 extract::plugins::tar::process(
-	fcppt::filesystem::path const &_p,
+	boost::filesystem::path const &_p,
 	mime_type const &_m)
 {
 	process::argument_list args;
@@ -69,22 +67,22 @@ extract::plugins::tar::process(
 	args.push_back(
 		FCPPT_TEXT("-C"));
 
-	fcppt::filesystem::path const real =
+	boost::filesystem::path const real =
 		real_target_path(_p,_m);
 
 	args.push_back(
 		real.string());
 
 	if(
-		fcppt::filesystem::exists(real) &&
-		!fcppt::filesystem::is_directory(real))
+		boost::filesystem::exists(real) &&
+		!boost::filesystem::is_directory(real))
 		throw fcppt::exception(
 			FCPPT_TEXT("Detected a tar bomb but directory")+
 			real.string()+
 			FCPPT_TEXT(" cannot be created"));
 
-	if (!fcppt::filesystem::exists(real))
-		fcppt::filesystem::create_directory(
+	if (!boost::filesystem::exists(real))
+		boost::filesystem::create_directory(
 			real);
 
 	process::exec(
@@ -93,7 +91,7 @@ extract::plugins::tar::process(
 
 extract::file_sequence const
 extract::plugins::tar::list(
-	fcppt::filesystem::path const &_p,
+	boost::filesystem::path const &_p,
 	mime_type const &_m)
 {
 	process::output out =

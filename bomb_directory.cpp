@@ -3,7 +3,7 @@
 
 fcppt::string const
 extract::bomb_directory(
-	fcppt::filesystem::path const &_p)
+	boost::filesystem::path const &_p)
 {
 	/*
 	fcppt::string::size_type const p =

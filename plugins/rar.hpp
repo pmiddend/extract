@@ -19,12 +19,12 @@ public:
 
 	void
 	process(
-		fcppt::filesystem::path const &,
+		boost::filesystem::path const &,
 		mime_type const &);
 
 	file_sequence const
 	list(
-		fcppt::filesystem::path const &,
+		boost::filesystem::path const &,
 		mime_type const &);
 
 	static bool

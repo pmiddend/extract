@@ -47,17 +47,17 @@ extract::environment::keep_broken() const
 		vm_["keep-broken"].as<bool>();
 }
 
-fcppt::optional<fcppt::filesystem::path> const
+fcppt::optional<boost::filesystem::path> const
 extract::environment::target_path() const
 {
 	return
 		vm_.count("target-dir")
 		?
-			fcppt::optional<fcppt::filesystem::path>(
-				fcppt::filesystem::path(
+			fcppt::optional<boost::filesystem::path>(
+				boost::filesystem::path(
 					vm_["target-dir"].as<fcppt::string>()))
 		:
-			fcppt::optional<fcppt::filesystem::path>();
+			fcppt::optional<boost::filesystem::path>();
 }
 
 bool

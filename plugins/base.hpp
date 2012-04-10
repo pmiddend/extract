@@ -25,20 +25,20 @@ public:
 
 	virtual void
 	process(
-		fcppt::filesystem::path const &,
+		boost::filesystem::path const &,
 		mime_type const &) = 0;
 
 	virtual file_sequence const
 	list(
-		fcppt::filesystem::path const &,
+		boost::filesystem::path const &,
 		mime_type const &) = 0;
 
 	virtual
 	~base();
 protected:
-	fcppt::filesystem::path const
+	boost::filesystem::path const
 	real_target_path(
-		fcppt::filesystem::path const &,
+		boost::filesystem::path const &,
 		mime_type const &);
 private:
 	mime_set const mimes_;

@@ -3,11 +3,11 @@
 
 #include <fcppt/string.hpp>
 #include <fcppt/optional.hpp>
-#include <fcppt/filesystem/path.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace extract
 {
-fcppt::optional<fcppt::filesystem::path> const
+fcppt::optional<boost::filesystem::path> const
 full_path(
 	fcppt::string const &);
 }
