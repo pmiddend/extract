@@ -1,38 +1,60 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+cmake_minimum_required(VERSION 2.6)
 
-PROJECT(extract)
+project(extract)
 
-SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
+include(
+	FcpptCMakeUtils)
 
-INCLUDE(FcpptCMakeUtils)
+include_directories(
+	${CMAKE_SOURCE_DIR}/include)
 
 # FIND BOOST
-FIND_PACKAGE(
+find_package(
 	Boost 1.45.0 REQUIRED
 	program_options
 	system
 )
 
-INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIR})
+include_directories(
+	${Boost_INCLUDE_DIR})
 
-LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+link_directories(
+	${Boost_LIBRARY_DIRS})
 
 # FIND FCPPT
-FIND_PACKAGE(Fcppt REQUIRED)
+find_package(
+	Fcppt
+	REQUIRED)
 
-INCLUDE_DIRECTORIES(${Fcppt_INCLUDE_DIRS})
+include_directories(
+	${Fcppt_INCLUDE_DIRS})
 
-FILE(GLOB basefiles *.cpp)
+add_definitions(
+	${Fcppt_DEFINITIONS})
 
-FILE(
-	GLOB_RECURSE collectionsfiles
-	process/*.cpp
-	plugins/*.cpp
+SET(
+	EXTRACT_FILES
+	src/extract/bomb_directory.cpp
+	src/extract/determine_mime_type.cpp
+	src/extract/environment.cpp
+	src/extract/file_sequence_to_file_tree.cpp
+	src/extract/full_path.cpp
+	src/extract/is_runnable.cpp
+	src/extract/list_files.cpp
+	src/extract/main.cpp
+	src/extract/plugins/base.cpp
+	src/extract/plugins/rar.cpp
+	src/extract/plugins/tar.cpp
+	src/extract/plugins/zip.cpp
+	src/extract/process/call.cpp
+	src/extract/process/call_safe.cpp
+	src/extract/process/exec.cpp
+	src/extract/unlines.cpp
 )
 
-ADD_EXECUTABLE(extract ${basefiles} ${collectionsfiles})
-
-ADD_DEFINITIONS(${Fcppt_DEFINITIONS})
+add_executable(
+	extract
+	${EXTRACT_FILES})
 
 TARGET_LINK_LIBRARIES(
 	extract
@@ -41,7 +63,7 @@ TARGET_LINK_LIBRARIES(
 )
 
 IF(NOT MSVC)
-	TARGET_LINK_LIBRARIES(extract ${Boost_LIBRARIES})
+	target_link_libraries(extract ${Boost_LIBRARIES})
 ENDIF()
 
-INSTALL(TARGETS extract DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/)
+install(TARGETS extract DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/)
