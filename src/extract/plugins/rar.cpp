@@ -99,8 +99,10 @@ extract::plugins::rar::list(
 		throw fcppt::exception(
 			FCPPT_TEXT("The error stream contains the following (unexpected) data: ")+
 			out.err);
-	out.out.erase(
-		--out.out.end());
+	// Why do we do that?
+	if(!out.out.empty())
+		out.out.erase(
+			--out.out.end());
 	return
 		unlines(
 			out.out);

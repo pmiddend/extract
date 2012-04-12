@@ -1,3 +1,5 @@
+#include <fcppt/ref.hpp>
+#include <fcppt/make_unique_ptr.hpp>
 #include <extract/determine_mime_type.hpp>
 #include <extract/environment.hpp>
 #include <extract/list_files.hpp>
@@ -8,6 +10,7 @@
 #include <fcppt/filesystem/extension.hpp>
 #include <fcppt/io/cerr.hpp>
 #include <fcppt/io/clog.hpp>
+#include <fcppt/container/ptr/push_back_unique_ptr.hpp>
 #include <fcppt/mpl/for_each.hpp>
 #include <fcppt/config/external_begin.hpp>
 #include <boost/foreach.hpp>
@@ -49,9 +52,11 @@ public:
 	operator()() const
 	{
 		if (T::is_available())
-			plugs_.push_back(
-				new T(
-					env_));
+			fcppt::container::ptr::push_back_unique_ptr(
+				plugs_,
+				fcppt::make_unique_ptr<T>(
+					fcppt::ref(
+						env_)));
 	}
 private:
 	plugin_sequence &plugs_;
@@ -137,14 +142,21 @@ try
 			plugs,
 			env));
 
-	plugin_sequence::iterator i =
-		plugs.end();
+	plugin_sequence::iterator i;
+
 	for (i = plugs.begin(); i != plugs.end(); ++i)
-		if (i->mimes().find(m) != i->mimes().end())
+		if(i->mimes().find(m) != i->mimes().end())
 			break;
 
 	if (i == plugs.end())
 	{
+		// Special case of empty file, catch here
+		if(m == FCPPT_TEXT("inode/x-empty"))
+		{
+			fcppt::io::cerr() << FCPPT_TEXT("Oh dear, that file is empty.\n");
+			return EXIT_FAILURE;
+		}
+
 		fcppt::io::clog()
 			<< FCPPT_TEXT("There was no matching extract plugin for file ")
 			<< p
@@ -171,6 +183,15 @@ try
 				<< FCPPT_TEXT(" is unknown, too. :(\n");
 			return EXIT_FAILURE;
 		}
+
+		fcppt::io::clog()
+			<<
+				FCPPT_TEXT("Ok, found a plugin for the extension \"")
+			<<
+				fcppt::filesystem::extension(
+					p)
+			<<
+				FCPPT_TEXT("\".\n");
 	}
 
 	if (vm["list"].as<bool>())
