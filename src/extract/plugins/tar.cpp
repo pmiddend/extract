@@ -39,6 +39,7 @@ extract::plugins::tar::tar(
 			(FCPPT_TEXT("application/x-tar"))
 			(FCPPT_TEXT("application/x-gzip"))
 			(FCPPT_TEXT("fictional/targz"))
+			(FCPPT_TEXT("fictional/tarxz"))
 			(FCPPT_TEXT("fictional/tarbz2")),
 		_env)
 {

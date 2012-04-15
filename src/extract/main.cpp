@@ -180,7 +180,7 @@ try
 				<<
 					fcppt::filesystem::extension(
 						p)
-				<< FCPPT_TEXT(" is unknown, too. :(\n");
+				<< FCPPT_TEXT("\" is unknown, too. :(\n");
 			return EXIT_FAILURE;
 		}
 

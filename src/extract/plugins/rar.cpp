@@ -1,3 +1,4 @@
+#include <boost/next_prior.hpp>
 #include <extract/is_runnable.hpp>
 #include <extract/unlines.hpp>
 #include <extract/plugins/rar.hpp>
@@ -102,7 +103,8 @@ extract::plugins::rar::list(
 	// Why do we do that?
 	if(!out.out.empty())
 		out.out.erase(
-			--out.out.end());
+			boost::prior(
+				out.out.end()));
 	return
 		unlines(
 			out.out);

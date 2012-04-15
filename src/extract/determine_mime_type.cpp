@@ -110,12 +110,21 @@ extract::determine_mime_type(
 				_p.string())
 			? FCPPT_TEXT("fictional/tarbz2")
 			: mime_pair.first;
+
 	if (mime_pair.first == FCPPT_TEXT("application/x-gzip"))
 		return
 			is_suffix(
 				FCPPT_TEXT(".tar.gz"),
 				_p.string())
 			? FCPPT_TEXT("fictional/targz")
+			: mime_pair.first;
+
+	if (mime_pair.first == FCPPT_TEXT("application/x-xz"))
+		return
+			is_suffix(
+				FCPPT_TEXT(".tar.xz"),
+				_p.string())
+			? FCPPT_TEXT("fictional/tarxz")
 			: mime_pair.first;
 
 	return
