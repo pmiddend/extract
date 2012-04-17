@@ -239,7 +239,7 @@ extract::plugins::zip::list(
 			static_cast<fcppt::string::size_type>(
 				0),
 			static_cast<fcppt::string::size_type>(
-				files.back().find("files")-1)));
+				files.back().find("file")-1)));
 
 	files.erase(
 		boost::prior(
