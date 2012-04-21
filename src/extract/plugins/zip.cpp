@@ -182,13 +182,13 @@ extract::plugins::zip::list(
 				(process::argument(fcppt::string(FCPPT_TEXT("-q"))))
 				(process::argument(_p.string())));
 
-	if (!out.err.empty())
+	if (!out.standard_error().empty())
 		throw fcppt::exception(
 			FCPPT_TEXT("zip command got the following error: ")+
-			out.err);
+			out.standard_error());
 
 	fcppt::io::istringstream ss(
-		out.out);
+		out.standard_output());
 
 	fcppt::string first_line,second_line;
 

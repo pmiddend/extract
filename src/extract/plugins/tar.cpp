@@ -112,8 +112,8 @@ extract::plugins::tar::list(
 				(process::argument(_p.string())));
 
 	// erase last newline
-	out.out.erase(
-		--out.out.end());
+	out.standard_output().erase(
+		--out.standard_output().end());
 
 	typedef
 	std::vector<fcppt::string>
@@ -121,7 +121,7 @@ extract::plugins::tar::list(
 
 	line_sequence const lines(
 		extract::unlines(
-			out.out));
+			out.standard_output()));
 
 	extract::file_sequence result;
 	for(line_sequence::const_iterator it = lines.begin(); it != lines.end(); ++it)

@@ -111,15 +111,15 @@ extract::plugins::rar::list(
 	process::output out =
 		process::call_safe(
 			args);
-	if (!out.err.empty())
+	if (!out.standard_error().empty())
 		throw fcppt::exception(
 			FCPPT_TEXT("The error stream contains the following (unexpected) data: ")+
-			out.err);
+			out.standard_error());
 	// Why do we do that?
-	if(!out.out.empty())
-		out.out.erase(
+	if(!out.standard_output().empty())
+		out.standard_output().erase(
 			boost::prior(
-				out.out.end()));
+				out.standard_output().end()));
 
 	typedef
 	std::vector<fcppt::string>
@@ -127,7 +127,7 @@ extract::plugins::rar::list(
 
 	line_sequence const lines(
 		extract::unlines(
-			out.out));
+			out.standard_output()));
 
 	extract::file_sequence result;
 	for(line_sequence::const_iterator it = lines.begin(); it != lines.end(); ++it)

@@ -1,8 +1,10 @@
-#include <boost/next_prior.hpp>
 #include <extract/file_sequence_to_file_tree.hpp>
 #include <extract/split.hpp>
-#include <fcppt/container/tree/object_impl.hpp>
 #include <fcppt/text.hpp>
+#include <fcppt/container/tree/object_impl.hpp>
+#include <fcppt/config/external_begin.hpp>
+#include <boost/next_prior.hpp>
+#include <fcppt/config/external_end.hpp>
 
 
 namespace

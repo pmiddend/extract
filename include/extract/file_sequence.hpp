@@ -2,8 +2,8 @@
 #define EXTRACT_FILE_SEQUENCE_HPP_HPP_INCLUDED
 
 #include <fcppt/config/external_begin.hpp>
-#include <vector>
 #include <boost/filesystem/path.hpp>
+#include <vector>
 #include <fcppt/config/external_end.hpp>
 
 

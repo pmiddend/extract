@@ -49,6 +49,7 @@ SET(
 	src/extract/process/call.cpp
 	src/extract/process/call_safe.cpp
 	src/extract/process/exec.cpp
+	src/extract/process/output.cpp
 	src/extract/unlines.cpp
 )
 

@@ -61,29 +61,29 @@ extract::determine_mime_type(
 				(process::argument(fcppt::string(FCPPT_TEXT("-ib"))))
 				(process::argument(fcppt::filesystem::path_to_string(_p.string()))));
 
-	if (!out.err.empty())
+	if (!out.standard_error().empty())
 		throw
 			fcppt::exception(
 				FCPPT_TEXT("\"file\" returned an error: ")+
-				out.err);
+				out.standard_error());
 
 	fcppt::string::size_type newline_position =
-		out.out.find(
+		out.standard_output().find(
 			FCPPT_TEXT('\n'));
 
 	if(
-		newline_position != static_cast<fcppt::string::size_type>(out.out.size()-1))
+		newline_position != static_cast<fcppt::string::size_type>(out.standard_output().size()-1))
 		throw fcppt::exception(
 			FCPPT_TEXT("Expected a single line of output from \"file\" command, got the following: ")+
 			boost::algorithm::replace_all_copy(
-				out.out,
+				out.standard_output(),
 				fcppt::string(
 					FCPPT_TEXT("\n")),
 				fcppt::string(
 					FCPPT_TEXT("\\n"))));
 
 	fcppt::string const first_line =
-		out.out.substr(
+		out.standard_output().substr(
 			0,
 			newline_position);
 

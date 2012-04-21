@@ -114,8 +114,8 @@ extract::process::call(
 
 		fcppt::string *outs[2] =
 			{
-				&out.out,
-				&out.err
+				&out.standard_output(),
+				&out.standard_error()
 			};
 		for (int i = 0; i < 2; ++i)
 		{
@@ -160,7 +160,7 @@ extract::process::call(
 
 	waitpid(
 		pid,
-		(&out.exit_code),
+		(&out.exit_code()),
 		0);
 
 	return out;

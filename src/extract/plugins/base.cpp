@@ -1,9 +1,9 @@
 #include <extract/bomb_directory.hpp>
 #include <extract/file_sequence_to_file_tree.hpp>
 #include <extract/plugins/base.hpp>
-#include <fcppt/container/tree/object_impl.hpp>
 #include <fcppt/exception.hpp>
 #include <fcppt/text.hpp>
+#include <fcppt/container/tree/object_impl.hpp>
 #include <fcppt/config/external_begin.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <fcppt/config/external_end.hpp>

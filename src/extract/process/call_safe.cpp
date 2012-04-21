@@ -12,15 +12,15 @@ extract::process::call_safe(
 		call(
 			_l);
 
-	if (out.exit_code)
+	if(out.exit_code())
 		throw fcppt::exception(
 			FCPPT_TEXT("The program ")+
 			_l[0].get()+
 			FCPPT_TEXT(" failed with exit code ")+
 			fcppt::insert_to_string<fcppt::string>(
-				out.exit_code)+
+				out.exit_code())+
 			FCPPT_TEXT(" and had this to say about it: \n")+
-			out.err);
+			out.standard_error());
 
 	return out;
 }
