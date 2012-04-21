@@ -42,16 +42,14 @@ extract::full_path(
 		boost::algorithm::is_any_of(
 			FCPPT_TEXT(":")));
 
-	BOOST_FOREACH(
-		part_sequence::const_reference r,
-		parts)
+	for(part_sequence::const_iterator r = parts.begin(); r != parts.end(); ++r)
 		if(
 			boost::filesystem::exists(
-				boost::filesystem::path(r)/
+				boost::filesystem::path(*r)/
 				s))
 			return
 				fcppt::optional<boost::filesystem::path>(
-					boost::filesystem::path(r)/
+					boost::filesystem::path(*r)/
 						s);
 
 	return

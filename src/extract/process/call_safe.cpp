@@ -15,7 +15,7 @@ extract::process::call_safe(
 	if (out.exit_code)
 		throw fcppt::exception(
 			FCPPT_TEXT("The program ")+
-			_l[0]+
+			_l[0].get()+
 			FCPPT_TEXT(" failed with exit code ")+
 			fcppt::insert_to_string<fcppt::string>(
 				out.exit_code)+

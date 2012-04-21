@@ -36,11 +36,11 @@ extract::plugins::tar::tar(
 :
 	base(
 		fcppt::assign::make_container<mime_set>
-			(FCPPT_TEXT("application/x-tar"))
-			(FCPPT_TEXT("application/x-gzip"))
-			(FCPPT_TEXT("fictional/targz"))
-			(FCPPT_TEXT("fictional/tarxz"))
-			(FCPPT_TEXT("fictional/tarbz2")),
+			(extract::mime_type(fcppt::string(FCPPT_TEXT("application/x-tar"))))
+			(extract::mime_type(fcppt::string(FCPPT_TEXT("application/x-gzip"))))
+			(extract::mime_type(fcppt::string(FCPPT_TEXT("fictional/targz"))))
+			(extract::mime_type(fcppt::string(FCPPT_TEXT("fictional/tarxz"))))
+			(extract::mime_type(fcppt::string(FCPPT_TEXT("fictional/tarbz2")))),
 		_env)
 {
 }
@@ -48,16 +48,19 @@ extract::plugins::tar::tar(
 void
 extract::plugins::tar::process(
 	boost::filesystem::path const &_p,
-	mime_type const &_m)
+	extract::mime_type const &_m)
 {
 	process::argument_list args;
 	args.push_back(
-		command_name_);
+		process::argument(
+			command_name_));
 
 	args.push_back(
-		command_string(_m)+
-		(environment().verbose() ? FCPPT_TEXT("v") : FCPPT_TEXT(""))+
-		FCPPT_TEXT("xf"));
+		process::argument(
+			command_string(
+				_m)+
+			(environment().verbose() ? FCPPT_TEXT("v") : FCPPT_TEXT(""))+
+			FCPPT_TEXT("xf")));
 
 	if (environment().password())
 		fcppt::io::cerr() << FCPPT_TEXT("You specified a password. tar doesn't support passwords, however.\n");
@@ -66,16 +69,19 @@ extract::plugins::tar::process(
 		fcppt::io::cerr() << FCPPT_TEXT("You specified to keep broken files. tar doesn't support this, however.\n");
 
 	args.push_back(
-		_p.string());
+		process::argument(
+			_p.string()));
 
 	args.push_back(
-		FCPPT_TEXT("-C"));
+		process::argument(
+			FCPPT_TEXT("-C")));
 
 	boost::filesystem::path const real =
 		real_target_path(_p,_m);
 
 	args.push_back(
-		real.string());
+		process::argument(
+			real.string()));
 
 	if(
 		boost::filesystem::exists(real) &&
@@ -101,17 +107,30 @@ extract::plugins::tar::list(
 	process::output out =
 		process::call_safe(
 			fcppt::assign::make_container<process::argument_list>
-				(command_name_)
-				(command_string(_m)+FCPPT_TEXT("tf"))
-				(_p.string()));
+				(process::argument(command_name_))
+				(process::argument(command_string(_m)+FCPPT_TEXT("tf")))
+				(process::argument(_p.string())));
 
 	// erase last newline
 	out.out.erase(
 		--out.out.end());
 
+	typedef
+	std::vector<fcppt::string>
+	line_sequence;
+
+	line_sequence const lines(
+		extract::unlines(
+			out.out));
+
+	extract::file_sequence result;
+	for(line_sequence::const_iterator it = lines.begin(); it != lines.end(); ++it)
+		result.push_back(
+			boost::filesystem::path(
+				*it));
+
 	return
-		unlines(
-			out.out);
+		result;
 }
 
 bool
@@ -126,9 +145,9 @@ fcppt::string const
 extract::plugins::tar::command_string(
 	mime_type const &_m)
 {
-	if (_m == FCPPT_TEXT("fictional/targz") || _m == FCPPT_TEXT("application/x-gzip"))
+	if (_m.get() == FCPPT_TEXT("fictional/targz") || _m.get() == FCPPT_TEXT("application/x-gzip"))
 		return FCPPT_TEXT("z");
-	if (_m == FCPPT_TEXT("fictional/tarbz2"))
+	if (_m.get() == FCPPT_TEXT("fictional/tarbz2"))
 		return FCPPT_TEXT("j");
 	return FCPPT_TEXT("");
 }

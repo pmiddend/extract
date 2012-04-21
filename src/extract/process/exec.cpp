@@ -28,17 +28,17 @@ extract::process::exec(
 		newargv[i] =
 			new char[
 				static_cast<std::size_t>(
-					_args[i].size()+1)];
+					_args[i].get().size()+1)];
 		std::strcpy(
 			newargv[i],
-			_args[i].c_str());
+			_args[i].get().c_str());
 	}
 	newargv[
 		static_cast<std::size_t>(
 			_args.size())] = 0;
 
 	execvp(
-		_args.begin()->c_str(),
+		_args.begin()->get().c_str(),
 		newargv);
 
 	throw

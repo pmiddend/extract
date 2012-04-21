@@ -1,4 +1,3 @@
-#include <boost/next_prior.hpp>
 #include <extract/is_runnable.hpp>
 #include <extract/unlines.hpp>
 #include <extract/plugins/rar.hpp>
@@ -10,6 +9,7 @@
 #include <fcppt/io/cerr.hpp>
 #include <fcppt/config/external_begin.hpp>
 #include <boost/foreach.hpp>
+#include <boost/next_prior.hpp>
 #include <fcppt/config/external_end.hpp>
 
 
@@ -17,9 +17,9 @@ extract::plugins::rar::rar(
 	extract::environment const &_env)
 :
 	base(
-		fcppt::assign::make_container<mime_set>
-			(FCPPT_TEXT("application/x-rar"))
-			(FCPPT_TEXT("fictional/.rar")),
+		fcppt::assign::make_container<plugins::mime_set>
+			(extract::mime_type(fcppt::string(FCPPT_TEXT("application/x-rar"))))
+			(extract::mime_type(fcppt::string(FCPPT_TEXT("fictional/.rar")))),
 		_env),
 	command_name_(
 		is_runnable(FCPPT_TEXT("unrar"))
@@ -37,10 +37,13 @@ extract::plugins::rar::process(
 {
 	process::argument_list args;
 	args.push_back(
-		command_name_);
+		process::argument(
+			command_name_));
 
 	args.push_back(
-		FCPPT_TEXT("x"));
+		process::argument(
+			fcppt::string(
+				FCPPT_TEXT("x"))));
 
 	/*
 	args.push_back(
@@ -49,22 +52,29 @@ extract::plugins::rar::process(
 
 	if (environment().password())
 		args.push_back(
-			FCPPT_TEXT("-p")+
-			(*environment().password()));
+			process::argument(
+				FCPPT_TEXT("-p")+
+				(*environment().password())));
 
 	if (environment().keep_broken())
 		args.push_back(
-			FCPPT_TEXT("-kb"));
+			process::argument(
+				fcppt::string(
+				FCPPT_TEXT("-kb"))));
 
 	if (!environment().verbose())
 		args.push_back(
-			FCPPT_TEXT("-idc"));
+			process::argument(
+				fcppt::string(
+					FCPPT_TEXT("-idc"))));
 
 	args.push_back(
-		_p.string());
+		process::argument(
+			_p.string()));
 
 	args.push_back(
-		real_target_path(_p,_m).string()+FCPPT_TEXT("/")); // NOTE: There _has_ to be a trailing / so rar accepts it as a target directory
+		process::argument(
+			real_target_path(_p,_m).string()+FCPPT_TEXT("/"))); // NOTE: There _has_ to be a trailing / so rar accepts it as a target directory
 
 	/*
 	fcppt::io::cerr << "executing the following command:";
@@ -83,15 +93,20 @@ extract::plugins::rar::list(
 {
 	process::argument_list args;
 	args.push_back(
-		command_name_);
+		process::argument(
+			command_name_));
 	args.push_back(
-		FCPPT_TEXT("vb"));
+		process::argument(
+			fcppt::string(
+				FCPPT_TEXT("vb"))));
 	if (environment().password())
 		args.push_back(
-			FCPPT_TEXT("-p")+
-			(*environment().password()));
+			process::argument(
+				FCPPT_TEXT("-p")+
+				(*environment().password())));
 	args.push_back(
-		_p.string());
+		process::argument(
+			_p.string()));
 
 	process::output out =
 		process::call_safe(
@@ -105,9 +120,22 @@ extract::plugins::rar::list(
 		out.out.erase(
 			boost::prior(
 				out.out.end()));
+
+	typedef
+	std::vector<fcppt::string>
+	line_sequence;
+
+	line_sequence const lines(
+		extract::unlines(
+			out.out));
+
+	extract::file_sequence result;
+	for(line_sequence::const_iterator it = lines.begin(); it != lines.end(); ++it)
+		result.push_back(
+			boost::filesystem::path(
+				*it));
 	return
-		unlines(
-			out.out);
+		result;
 }
 
 bool

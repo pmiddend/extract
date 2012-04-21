@@ -4,6 +4,7 @@
 #include <fcppt/text.hpp>
 #include <fcppt/assign/make_container.hpp>
 #include <fcppt/filesystem/extension.hpp>
+#include <fcppt/filesystem/path_to_string.hpp>
 #include <fcppt/config/external_begin.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <fcppt/config/external_end.hpp>
@@ -56,13 +57,15 @@ extract::determine_mime_type(
 	process::output const out =
 		process::call(
 			fcppt::assign::make_container<process::argument_list>
-				(fcppt::string(FCPPT_TEXT("file")))
-				(fcppt::string(FCPPT_TEXT("-ib")))
-				(_p.string()));
+				(process::argument(fcppt::string(FCPPT_TEXT("file"))))
+				(process::argument(fcppt::string(FCPPT_TEXT("-ib"))))
+				(process::argument(fcppt::filesystem::path_to_string(_p.string()))));
 
 	if (!out.err.empty())
-		throw fcppt::exception(
-			FCPPT_TEXT("file returned an error: ")+out.err);
+		throw
+			fcppt::exception(
+				FCPPT_TEXT("\"file\" returned an error: ")+
+				out.err);
 
 	fcppt::string::size_type newline_position =
 		out.out.find(
@@ -85,7 +88,7 @@ extract::determine_mime_type(
 			newline_position);
 
 	std::pair<fcppt::string,fcppt::string> const mime_pair =
-		split(
+		::split(
 			first_line,
 			FCPPT_TEXT(';'));
 
@@ -100,33 +103,45 @@ extract::determine_mime_type(
 				_p);
 
 		return
-			FCPPT_TEXT("fictional/")+e;
+			extract::mime_type(
+				FCPPT_TEXT("fictional/")+e);
 	}
 
 	if (mime_pair.first == FCPPT_TEXT("application/x-bzip2"))
 		return
-			is_suffix(
-				FCPPT_TEXT(".tar.bz2"),
-				_p.string())
-			? FCPPT_TEXT("fictional/tarbz2")
-			: mime_pair.first;
+			extract::mime_type(
+				is_suffix(
+					FCPPT_TEXT(".tar.bz2"),
+					_p.string())
+				?
+					fcppt::string(
+						FCPPT_TEXT("fictional/tarbz2"))
+				:
+					mime_pair.first);
 
 	if (mime_pair.first == FCPPT_TEXT("application/x-gzip"))
 		return
-			is_suffix(
-				FCPPT_TEXT(".tar.gz"),
-				_p.string())
-			? FCPPT_TEXT("fictional/targz")
-			: mime_pair.first;
+			extract::mime_type(
+				is_suffix(
+					FCPPT_TEXT(".tar.gz"),
+					_p.string())
+				?
+					fcppt::string(FCPPT_TEXT("fictional/targz"))
+				:
+					mime_pair.first);
 
 	if (mime_pair.first == FCPPT_TEXT("application/x-xz"))
 		return
-			is_suffix(
-				FCPPT_TEXT(".tar.xz"),
-				_p.string())
-			? FCPPT_TEXT("fictional/tarxz")
-			: mime_pair.first;
+			extract::mime_type(
+				is_suffix(
+					FCPPT_TEXT(".tar.xz"),
+					_p.string())
+				?
+					FCPPT_TEXT("fictional/tarxz")
+				:
+					mime_pair.first);
 
 	return
-		mime_pair.first;
+		extract::mime_type(
+			mime_pair.first);
 }

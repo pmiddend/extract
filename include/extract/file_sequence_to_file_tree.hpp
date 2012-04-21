@@ -8,8 +8,8 @@ namespace extract
 {
 void
 file_sequence_to_file_tree(
-	extract::file_tree &,
-	extract::file_sequence const &);
+	extract::file_sequence const &,
+	extract::file_tree &);
 }
 
 #endif

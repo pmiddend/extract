@@ -12,10 +12,7 @@ namespace extract
 namespace plugins
 {
 typedef
-std::set
-<
-	extract::mime_type
->
+std::set<extract::mime_type>
 mime_set;
 }
 }

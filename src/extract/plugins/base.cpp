@@ -1,6 +1,7 @@
 #include <extract/bomb_directory.hpp>
 #include <extract/file_sequence_to_file_tree.hpp>
 #include <extract/plugins/base.hpp>
+#include <fcppt/container/tree/object_impl.hpp>
 #include <fcppt/exception.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/config/external_begin.hpp>
@@ -52,10 +53,10 @@ extract::plugins::base::real_target_path(
 	);
 
 	file_sequence_to_file_tree(
-		tree,
 		list(
 			_p,
-			_m));
+			_m),
+		tree);
 	if(
 		tree.size() > 1
 	)

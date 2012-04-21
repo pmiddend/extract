@@ -112,8 +112,8 @@ extract::plugins::zip::zip(
 :
 	base(
 		fcppt::assign::make_container<mime_set>
-			(FCPPT_TEXT("application/zip"))
-			(FCPPT_TEXT("fictional/.zip")),
+			(extract::mime_type(fcppt::string(FCPPT_TEXT("application/zip"))))
+			(extract::mime_type(fcppt::string(FCPPT_TEXT("fictional/.zip")))),
 		_env)
 {
 
@@ -126,14 +126,18 @@ extract::plugins::zip::process(
 {
 	process::argument_list args;
 	args.push_back(
-		command_name_);
+		process::argument(
+			command_name_));
 
 	if (environment().password())
 	{
 		args.push_back(
-			FCPPT_TEXT("-P"));
+			process::argument(
+				fcppt::string(
+					FCPPT_TEXT("-P"))));
 		args.push_back(
-			*environment().password());
+			process::argument(
+				*environment().password()));
 		fcppt::io::cerr() << FCPPT_TEXT("You specified a password. Zip doesn't support passwords, however.\n");
 	}
 
@@ -142,18 +146,24 @@ extract::plugins::zip::process(
 
 	if (!environment().verbose())
 		args.push_back(
-			FCPPT_TEXT("-qq"));
+			process::argument(
+				fcppt::string(
+					FCPPT_TEXT("-qq"))));
 
 	args.push_back(
-		_p.string());
+		process::argument(
+			_p.string()));
 
 	args.push_back(
-		FCPPT_TEXT("-d"));
+		process::argument(
+			fcppt::string(
+				FCPPT_TEXT("-d"))));
 
 	args.push_back(
-		real_target_path(
-			_p,
-			_m).string());
+		process::argument(
+			real_target_path(
+				_p,
+				_m).string()));
 
 	process::exec(
 		args);
@@ -167,10 +177,10 @@ extract::plugins::zip::list(
 	process::output const out =
 		process::call_safe(
 			fcppt::assign::make_container<process::argument_list>
-				(command_name_)
-				(FCPPT_TEXT("-l"))
-				(FCPPT_TEXT("-q"))
-				(_p.string()));
+				(process::argument(command_name_))
+				(process::argument(fcppt::string(FCPPT_TEXT("-l"))))
+				(process::argument(fcppt::string(FCPPT_TEXT("-q"))))
+				(process::argument(_p.string())));
 
 	if (!out.err.empty())
 		throw fcppt::exception(
@@ -209,7 +219,11 @@ extract::plugins::zip::list(
 			first_line,
 			second_line);
 
-	file_sequence files;
+	typedef
+	std::vector<fcppt::string>
+	string_sequence;
+
+	string_sequence files;
 	fcppt::string line;
 	while(
 		std::getline(
@@ -247,7 +261,13 @@ extract::plugins::zip::list(
 			2),
 		files.end());
 
-	return files;
+	extract::file_sequence result;
+	for(string_sequence::const_iterator it = files.begin(); it != files.end(); ++it)
+		result.push_back(
+			boost::filesystem::path(
+				*it));
+	return
+		result;
 }
 
 bool

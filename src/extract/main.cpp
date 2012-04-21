@@ -1,16 +1,16 @@
-#include <fcppt/ref.hpp>
-#include <fcppt/make_unique_ptr.hpp>
 #include <extract/determine_mime_type.hpp>
 #include <extract/environment.hpp>
 #include <extract/list_files.hpp>
 #include <extract/plugin_types.hpp>
 #include <fcppt/exception.hpp>
+#include <fcppt/make_unique_ptr.hpp>
+#include <fcppt/ref.hpp>
 #include <fcppt/text.hpp>
 #include <fcppt/assign/make_container.hpp>
+#include <fcppt/container/ptr/push_back_unique_ptr.hpp>
 #include <fcppt/filesystem/extension.hpp>
 #include <fcppt/io/cerr.hpp>
 #include <fcppt/io/clog.hpp>
-#include <fcppt/container/ptr/push_back_unique_ptr.hpp>
 #include <fcppt/mpl/for_each.hpp>
 #include <fcppt/config/external_begin.hpp>
 #include <boost/foreach.hpp>
@@ -151,7 +151,7 @@ try
 	if (i == plugs.end())
 	{
 		// Special case of empty file, catch here
-		if(m == FCPPT_TEXT("inode/x-empty"))
+		if(m == extract::mime_type(fcppt::string(FCPPT_TEXT("inode/x-empty"))))
 		{
 			fcppt::io::cerr() << FCPPT_TEXT("Oh dear, that file is empty.\n");
 			return EXIT_FAILURE;

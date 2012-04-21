@@ -1,4 +1,5 @@
 #include <extract/file_sequence_to_file_tree.hpp>
+#include <fcppt/container/tree/object_impl.hpp>
 #include <extract/file_tree.hpp>
 #include <extract/list_files.hpp>
 #include <fcppt/text.hpp>
@@ -43,10 +44,10 @@ extract::list_files(
 		_p.string());
 
 	file_sequence_to_file_tree(
-		tree,
 		_b.list(
 			_p,
-			_m));
+			_m),
+		tree);
 
 	output(
 		fcppt::io::cout(),
