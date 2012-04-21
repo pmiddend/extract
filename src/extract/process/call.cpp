@@ -1,3 +1,5 @@
+#include <cstdlib>
+#include <fcppt/container/array.hpp>
 #include <extract/process/call.hpp>
 #include <extract/process/exec.hpp>
 #include <fcppt/exception.hpp>
@@ -6,6 +8,7 @@
 #include <fcppt/error/strerror.hpp>
 #include <fcppt/io/cerr.hpp>
 #include <fcppt/config/external_begin.hpp>
+#include <sys/epoll.h>
 #include <sys/select.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -69,58 +72,67 @@ extract::process::call(
 	close(
 		err_pipe[writing_end]);
 
-	fd_set master_fds;
-	FD_ZERO(
-		&master_fds);
+	int const epollfd =
+		epoll_create(2);
 
-	FD_SET(
-		out_pipe[reading_end],
-		&master_fds);
+	if(epollfd == -1)
+		throw
+			fcppt::exception(
+				FCPPT_TEXT("epoll_create failed"));
 
-	FD_SET(
-		err_pipe[reading_end],
-		&master_fds);
+	epoll_event new_event;
+	new_event.events = EPOLLIN;
+	new_event.data.fd = out_pipe[reading_end];
 
-	output out;
-	int eof_count =
-		0;
-	while (eof_count < 2)
+	if(epoll_ctl(epollfd,EPOLL_CTL_ADD,out_pipe[reading_end],&new_event) == -1)
+		throw
+			fcppt::exception(
+				FCPPT_TEXT("epoll_ctl failed"));
+
+	new_event.events = EPOLLIN;
+	new_event.data.fd = err_pipe[reading_end];
+
+	if(epoll_ctl(epollfd,EPOLL_CTL_ADD,err_pipe[reading_end],&new_event) == -1)
+		throw
+			fcppt::exception(
+				FCPPT_TEXT("epoll_ctl failed"));
+
+	process::output out;
+
+	for(unsigned eof_count = 0u; eof_count < 2u;)
 	{
-		fd_set read_fds = master_fds;
+		typedef
+		fcppt::container::array
+		<
+			epoll_event,
+			2
+		>
+		epoll_event_array;
 
-		int
-			maxfd =
-				std::max(
-					out_pipe[reading_end],
-					err_pipe[reading_end]),
-			select_return =
-				select(
-					maxfd+1,
-					&read_fds,
-					0,
-					0,
-					0);
+		epoll_event_array events;
 
-		if (select_return == -1)
+		int const retrieved_events =
+			epoll_wait(
+				epollfd,
+				events.data(),
+				2,
+				-1);
+
+		if(retrieved_events == -1)
 			throw
 				fcppt::exception(
-					FCPPT_TEXT("select failed"));
+					FCPPT_TEXT("epoll_wait failed"));
 
-		int const fds[2] =
-			{
-				out_pipe[reading_end],
-				err_pipe[reading_end]
-			};
 
-		fcppt::string *outs[2] =
-			{
-				&out.standard_output(),
-				&out.standard_error()
-			};
-		for (int i = 0; i < 2; ++i)
+		for(std::size_t i = 0; i < static_cast<std::size_t>(retrieved_events); ++i)
 		{
-			if (!FD_ISSET(fds[i],&read_fds))
-				continue;
+			int fd_index = events[i].data.fd == out_pipe[reading_end] ? 0 : 1;
+
+			fcppt::string *outs[2] =
+				{
+					&out.standard_output(),
+					&out.standard_error()
+				};
 
 			ssize_t const buffer_size =
 				static_cast<ssize_t>(
@@ -129,30 +141,23 @@ extract::process::call(
 			char char_buffer[buffer_size];
 
 			ssize_t const b = ::read(
-				fds[i],
+				events[i].data.fd,
 				char_buffer,
 				static_cast<std::size_t>(
 					buffer_size-1));
 
-			if (b == static_cast<ssize_t>(0))
+			if(b == 0)
 			{
-	//			fcppt::io::cerr << "recieved eof on fd " << fds[i] << "\n";
 				eof_count++;
-				FD_CLR(
-					fds[i],
-					&master_fds);
-				continue;
 			}
 
-			if (b == static_cast<ssize_t>(-1))
+			if(b == static_cast<ssize_t>(-1))
 				throw
 					fcppt::exception(
 						FCPPT_TEXT("read failed"));
 
-	//		fcppt::io::cerr << "received the following crap: " << fcppt::string(char_buffer,char_buffer+b) << "\n";
-
-			outs[i]->insert(
-				outs[i]->end(),
+			outs[fd_index]->insert(
+				outs[fd_index]->end(),
 				char_buffer,
 				char_buffer + b);
 		}
